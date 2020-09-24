@@ -2,7 +2,7 @@
 from gooey import *
 import pandas as pd
 # input parameters
-@Gooey(required_cols=2, program_name='intesect txt', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=4, program_name='intesect txt', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
   ap = GooeyParser(description= "exports the common lines of  2 txt files")
   ap.add_argument("-tab1", "--table1", required=True, widget='FileChooser', help=" input txt file")
