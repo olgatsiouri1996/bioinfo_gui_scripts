@@ -1,7 +1,6 @@
 # python3
 from gooey import *
 from Bio import SeqIO
-import pandas as pd
 # input parameters
 @Gooey(required_cols=5, program_name='select headers by %aa content', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
