@@ -30,7 +30,7 @@ def main():
 # export
   with open(args['output_file'], 'a') as f:
     f.write(
-        df.to_csv(header = True, index = False, sep= "\t")
+        df.to_csv(header = True, index = False, sep= "\t", line_terminator= '\n')
     )
 
 if __name__ == '__main__':
