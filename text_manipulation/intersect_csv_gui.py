@@ -17,7 +17,7 @@ def main():
 # export
   with open(args['output'], 'a') as f:
     f.write(
-        df_merge_col.to_csv(header = True, index = False, doublequote= False)
+        df_merge_col.to_csv(header = True, index = False, doublequote= False, line_terminator= '\n')
     )
 
 if __name__ == '__main__':
