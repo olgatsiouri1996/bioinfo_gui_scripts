@@ -1,17 +1,27 @@
 from gooey import *
 from Bio import SeqIO
 import matplotlib
+import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 # input parameters
-@Gooey(required_cols=6, program_name='jaccard calculator', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=14, program_name='jaccard calculator', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser(description="generate kmers from input files and export statistics and a venn diagram")
     ap.add_argument("-seq1", "--seq1", required=True, widget='FileChooser', help="first fasta to import")
+    ap.add_argument("-name1", "--name1", required=True, help="name of seq1's sequence/organism")
+    ap.add_argument("-col1", "--col1", required=True, help="colour of seq1's subset in venn")
     ap.add_argument("-seq2", "--seq2", required=True, widget='FileChooser', help="second fasta to import")
+    ap.add_argument("-name2", "--name2", required=True, help="name of seq2's sequence/organism")
+    ap.add_argument("-col2", "--col2", required=True, help="colour of seq2's subset in venn")
     ap.add_argument("-step", "--step", required=True, help="step size to split fasta, type = int")
     ap.add_argument("-win", "--window", required=True, help="window size of splitted subsets, type = int")
     ap.add_argument("-plot", "--plot", required=True, widget='FileSaver', help="export venn diagram to file")
     ap.add_argument("-dpi", "--dpi", required=True, help="dpi of exported plot")
+    ap.add_argument("-alpha", "--alpha", required=True, help="plot opacity")
+    ap.add_argument("-width", "--width", required=True, help="plot width", type= float)
+    ap.add_argument("-tall", "--tall", required=True, help="plot height", type= float)
+    ap.add_argument("-type", "--type", required=True, help="type of plot file(e.g png etc)")
+
     args = vars(ap.parse_args())
 # calculate similarity
     def jaccard_similarity(a, b):
@@ -40,12 +50,13 @@ def main():
         for i in range(0, len(record.seq) - int(args['window']) + 1, int(args['step'])):
             seq2.append(record.seq[i:i + int(args['window'])])
 
-    print("seq1 vs seq2", jaccard_similarity(seq1, seq2))
-    print("seq2 vs seq1", jaccard_similarity(seq2, seq1))
-    print("seq1 vs seq2", jaccard_containment(seq1, seq2))
-    print("seq2 vs seq1", jaccard_containment(seq2, seq1))
-    plt = venn2([set(seq1), set(seq2)],('Seq1','Seq2'))
-    matplotlib.pyplot.savefig(args['plot'], dpi=int(args['dpi']))
+    print("seq1 vs seq2 jaccard similarity", jaccard_similarity(seq1, seq2))
+    print("seq2 vs seq1 jaccard similarity", jaccard_similarity(seq2, seq1))
+    print("seq1 vs seq2 jaccard containment", jaccard_containment(seq1, seq2))
+    print("seq2 vs seq1 jaccard containment", jaccard_containment(seq2, seq1))
+    plt.figure(figsize=(float(args['width']), float(args['tall'])))
+    v = venn2([set(seq1), set(seq2)],(args['name1'], args['name2']), (args['col1'], args['col2']), alpha = float(args['alpha']))
+    matplotlib.pyplot.savefig(args['plot'], dpi=int(args['dpi']), format=args['type'])
 
 if __name__ == '__main__':
     main()
