@@ -3,7 +3,7 @@ from gooey import *
 import synbiopython
 import synbiopython.genbabel as stdgen
 # imput parameters
-@Gooey(required_cols=3, program_name='circut plotter', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name='circuit plotter', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
     ap.add_argument("-in", "--input", required=True, help="input circut components")
