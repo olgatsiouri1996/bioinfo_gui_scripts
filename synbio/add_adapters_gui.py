@@ -3,7 +3,7 @@ from gooey import *
 from Bio import SeqIO
 import sys
 # imput parameters
-@Gooey(required_cols=5, program_name='codon optimization', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=5, program_name='add adapters to sequence', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
     ap.add_argument("-up", "--upstream", required=True, widget='FileChooser', help="upstream adapter(fasta format)")
