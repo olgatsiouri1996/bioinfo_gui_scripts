@@ -4,10 +4,10 @@ from Bio import SeqIO
 from synbiopython.codon import table, taxonomy_utils, utils
 import sys
 # imput parameters
-@Gooey(required_cols=3, program_name='codon optimization', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name='codon optimization from protein', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
-    ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi or single fasta file")
+    ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi or single fasta file with protein/proteins")
     ap.add_argument("-taxid", "--taxid", required=True, help="taxonomy id to retrieve the codon table for optimization")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output single or multi fasta file")
     args = vars(ap.parse_args())
