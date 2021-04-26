@@ -3,7 +3,7 @@ from gooey import *
 from Bio import SeqIO
 import sys
 # imput parameters
-@Gooey(required_cols=2, program_name='merge multifasta to singlefasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name='merge multifasta to singlefasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
     ap.add_argument("-mfa", "--multifasta", required=True, widget='FileChooser', help="input multi-fasta file to merge its sequences")
