@@ -12,13 +12,13 @@ def main():
     ap.add_argument("-opt","--optimized", required=True, widget='FileSaver', help="optimized fasta file")
     args = vars(ap.parse_args())
 # main
+    sys.stdout = open(args['optimized'], 'a')
     for record in SeqIO.parse(args['fasta'], "fasta"):
         problem = DnaOptimizationProblem(sequence=str(record.seq),
         objectives=[CodonOptimize(species= args['organism'])])
         problem.optimize()
-        sys.stdout = open(args['optimized'], 'a')
         print(">"+record.id,problem.sequence, sep='\n')
-        sys.stdout.close()
+    sys.stdout.close()
 
 if __name__ == '__main__':
     main()
