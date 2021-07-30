@@ -1,8 +1,9 @@
 # python3
 from gooey import *
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 from dnachisel import *
-import sys
 # imput parameters
 @Gooey(required_cols=3, program_name='codon optimize cds', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
@@ -12,14 +13,15 @@ def main():
     ap.add_argument("-opt","--optimized", required=True, widget='FileSaver', help="optimized fasta file")
     args = vars(ap.parse_args())
 # main
-    sys.stdout = open(args['optimized'], 'a')
+    optimized_seqs = [] # setup an empty list
     for record in SeqIO.parse(args['fasta'], "fasta"):
         problem = DnaOptimizationProblem(sequence=str(record.seq),
         objectives=[CodonOptimize(species= args['organism'])])
         problem.optimize()
-        print(">"+record.id,problem.sequence, sep='\n')
-    sys.stdout.close()
+        # add this record to the list
+        optimized_seqs.append(SeqRecord(Seq(problem.sequence),id=record.id,description=""))
+# export to fasta
+    SeqIO.write(optimized_seqs, args['optimized'], "fasta")
 
 if __name__ == '__main__':
     main()
-
