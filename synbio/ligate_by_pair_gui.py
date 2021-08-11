@@ -9,7 +9,7 @@ from Bio.Alphabet import generic_dna
 @Gooey(required_cols=3, program_name='digital ligation', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser(description="ligate linear vector with DNA insert by pair from each input multi-fasta file")
-    ap.add_argument("-vr", "--vector", required=True, widget='FileChooser', help="linear vectors (multi-fasta file the order is inportant as the 1st vector matches the 1st insert in the file etc)")
+    ap.add_argument("-vr", "--vector", required=True, widget='FileChooser', help="linear vectors (multi-fasta file the order is important as the 1st vector matches the 1st insert in the file etc)")
     ap.add_argument("-in", "--insert", required=True, widget='FileChooser', help="sequences to insert in the vectors (multi-fasta file the order is inportant as the 1st insert matches the 1st vector in the file etc)")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output genbank file with circular sequences")
     args = vars(ap.parse_args())
