@@ -6,3 +6,5 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 3. DSSP tabular by chain GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4839987.svg)](https://doi.org/10.5281/zenodo.4839987)
 4. add adapters by pair GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5201840.svg)](https://doi.org/10.5281/zenodo.5201840)
 5. Extract or remove sequences from fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5213003.svg)](https://doi.org/10.5281/zenodo.5213003)
+6. FASTA subset by length GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5218645.svg)](https://doi.org/10.5281/zenodo.5218645)
+7. select header or fasta by aa GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5218741.svg)](https://doi.org/10.5281/zenodo.5218741)
