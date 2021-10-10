@@ -10,4 +10,4 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 7. select header or fasta by aa GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5218741.svg)](https://doi.org/10.5281/zenodo.5218741)
 8. amino acids content multifasta calculator GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5275827.svg)](https://doi.org/10.5281/zenodo.5275827)
 9. pdbs secondary structure statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5348006.svg)](https://doi.org/10.5281/zenodo.5348006)
-10. add adapters from single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5559117.svg)](https://doi.org/10.5281/zenodo.5559117)
+10. add adapters on single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5559117.svg)](https://doi.org/10.5281/zenodo.5559117)
