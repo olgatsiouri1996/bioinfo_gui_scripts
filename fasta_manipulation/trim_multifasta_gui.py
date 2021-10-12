@@ -6,15 +6,15 @@ from Bio import SeqIO
 def main():
   ap = GooeyParser()
   ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
-  ap.add_argument("-start", "--start", required=True, help="region to start writing the fasta file(starts from 0)")
-  ap.add_argument("-stop", "--stop", required=True, help="region to stop writing the fasta file(it can also be a negative number to remove nucleotides from the end of the sequence)")
+  ap.add_argument("-start", "--start", required=True, type=int, help="region to start writing the fasta file(starts from 0)")
+  ap.add_argument("-stop", "--stop", required=True, type=int, help="region to stop writing the fasta file(it can also be a negative number to remove nucleotides from the end of the sequence)")
   ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output fasta file")
   args = vars(ap.parse_args())
 # main
   sequences = []  # setup an empty list
   for record in SeqIO.parse(args['input'], "fasta"):
         # add this record to the list
-      sequences.append(record[int(args['start']):int(args['stop'])])
+      sequences.append(record[args['start']:args['stop']])
 
   SeqIO.write(sequences, args['output'], "fasta")
 

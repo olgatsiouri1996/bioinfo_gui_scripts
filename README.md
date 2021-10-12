@@ -1,4 +1,4 @@
-# bioinfo_gui_scripts [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5559775.svg)](https://doi.org/10.5281/zenodo.5559775)
+# bioinfo_gui_scripts 
 python scripts that can be easily transformed to gui programs for wet lab scientists to use(see the wiki page for documentation and depedences)
 ## GUI stadalone programs(.exe)
 1. DSSP statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4838997.svg)](https://doi.org/10.5281/zenodo.4838997)
@@ -11,3 +11,5 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 8. amino acids content multifasta calculator GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5275827.svg)](https://doi.org/10.5281/zenodo.5275827)
 9. pdbs secondary structure statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5348006.svg)](https://doi.org/10.5281/zenodo.5348006)
 10. add adapters on single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5559117.svg)](https://doi.org/10.5281/zenodo.5559117)
+11. Trim multi-fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565197.svg)](https://doi.org/10.5281/zenodo.5565197)
+12. Trim single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565299.svg)](https://doi.org/10.5281/zenodo.5565299)
