@@ -17,3 +17,4 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 14. tab to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5703366.svg)](https://doi.org/10.5281/zenodo.5703366)
 15. single-fastas to tabular GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5672075.svg)](https://doi.org/10.5281/zenodo.5672075)
 16. tabular file to single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5652249.svg)](https://doi.org/10.5281/zenodo.5652249)
+17. fasta formatter GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5703665.svg)](https://doi.org/10.5281/zenodo.5703665)
