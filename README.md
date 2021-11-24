@@ -1,4 +1,4 @@
-# bioinfo_gui_scripts [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5719342.svg)](https://doi.org/10.5281/zenodo.5719342)
+# bioinfo_gui_scripts 
 python scripts that can be easily transformed to gui programs for wet lab scientists to use(see the wiki page for documentation and depedences)
 ## GUI stadalone programs(.exe)
 1. DSSP statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4838997.svg)](https://doi.org/10.5281/zenodo.4838997)
@@ -11,13 +11,14 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 8. amino acids content multifasta calculator GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5275827.svg)](https://doi.org/10.5281/zenodo.5275827)
 9. pdbs secondary structure statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5348006.svg)](https://doi.org/10.5281/zenodo.5348006)
 10. add adapters on single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5559117.svg)](https://doi.org/10.5281/zenodo.5559117)
-11. Trim multi-fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565197.svg)](https://doi.org/10.5281/zenodo.5565197)
-12. Trim single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5565299.svg)](https://doi.org/10.5281/zenodo.5565299)
+11. Trim multi-fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5725555.svg)](https://doi.org/10.5281/zenodo.5725555)
+12. Trim single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5725465.svg)](https://doi.org/10.5281/zenodo.5725465)
 13. fasta to tab GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5699003.svg)](https://doi.org/10.5281/zenodo.5699003)
 14. tab to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5703366.svg)](https://doi.org/10.5281/zenodo.5703366)
 15. single-fastas to tabular GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5672075.svg)](https://doi.org/10.5281/zenodo.5672075)
 16. tabular file to single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5652249.svg)](https://doi.org/10.5281/zenodo.5652249)
 17. fasta formatter GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5703665.svg)](https://doi.org/10.5281/zenodo.5703665)
 18. chain pdb to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5706468.svg)](https://doi.org/10.5281/zenodo.5706468)
-19. subset pdb to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5718967.svg)](https://doi.org/10.5281/zenodo.5718967)
+19. subset pdb to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5725658.svg)](https://doi.org/10.5281/zenodo.5725658)
+
 
