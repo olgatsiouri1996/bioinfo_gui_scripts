@@ -28,7 +28,7 @@ def main():
         sys.stdout.close()
     elif args['program'] == 2:
         # import each fasta file from the working directory
-        for filename in sorted(os.listdir(str(os.getcwd()))):
+        for filename in sorted(os.listdir(os.chdir(args['directory']))):
             if filename.endswith(".fa") or filename.endswith(".fasta"):
                 # export to new fasta files with the user imported width value
                 sys.stdout = open(''.join([filename.split(".")[0],"_","w",str(args['width']),".fasta"]), 'a')

@@ -1,4 +1,4 @@
-# bioinfo_gui_scripts [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5800157.svg)](https://doi.org/10.5281/zenodo.5800157)
+# bioinfo_gui_scripts 
 python scripts that can be easily transformed to gui programs for wet lab scientists to use(see the wiki page for documentation and depedences)
 ## GUI stadalone programs(.exe)
 1. DSSP statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4838997.svg)](https://doi.org/10.5281/zenodo.4838997)
@@ -15,7 +15,7 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 12. tab to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5703366.svg)](https://doi.org/10.5281/zenodo.5703366)
 13. single-fastas to tabular GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5672075.svg)](https://doi.org/10.5281/zenodo.5672075)
 14. tabular file to single-fastas GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5652249.svg)](https://doi.org/10.5281/zenodo.5652249)
-15. fasta formatter GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5799390.svg)](https://doi.org/10.5281/zenodo.5799390)
+15. fasta formatter GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5807930.svg)](https://doi.org/10.5281/zenodo.5807930)
 16. chain pdb to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5706468.svg)](https://doi.org/10.5281/zenodo.5706468)
 17. subset pdb to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5725658.svg)](https://doi.org/10.5281/zenodo.5725658)
 18. trim fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5794123.svg)](https://doi.org/10.5281/zenodo.5794123)
