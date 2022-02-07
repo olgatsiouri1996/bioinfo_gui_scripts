@@ -1,4 +1,4 @@
-# bioinfo_gui_scripts [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5819203.svg)](https://doi.org/10.5281/zenodo.5819203)
+# bioinfo_gui_scripts 
 python scripts that can be easily transformed to gui programs for wet lab scientists to use(see the wiki page for documentation and depedences)
 ## GUI stadalone programs(.exe)
 1. DSSP statistics GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4838997.svg)](https://doi.org/10.5281/zenodo.4838997)
@@ -19,5 +19,4 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 16. trim fasta to tab GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5794534.svg)](https://doi.org/10.5281/zenodo.5794534)
 17. tab trim to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5794334.svg)](https://doi.org/10.5281/zenodo.5794334)
 18. subset by aa GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5819131.svg)](https://doi.org/10.5281/zenodo.5819131)
-
-
+19. digital ligation GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5979685.svg)](https://doi.org/10.5281/zenodo.5979685)
