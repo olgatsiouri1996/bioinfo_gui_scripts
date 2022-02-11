@@ -19,4 +19,5 @@ python scripts that can be easily transformed to gui programs for wet lab scient
 16. trim fasta to tab GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5794534.svg)](https://doi.org/10.5281/zenodo.5794534)
 17. tab trim to fasta GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5794334.svg)](https://doi.org/10.5281/zenodo.5794334)
 18. subset by aa GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5819131.svg)](https://doi.org/10.5281/zenodo.5819131)
-19. digital ligation GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5979685.svg)](https://doi.org/10.5281/zenodo.5979685)
+19. digital ligation GUI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6011929.svg)](https://doi.org/10.5281/zenodo.6011929)
+
