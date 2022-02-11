@@ -10,14 +10,14 @@ import pandas as pd
 @Gooey(required_cols=2, program_name='ligate in pairs single-fasta files with vectors', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser(description="ligate in pairs vectors in genbank format with annotations, with inserts in single-fasta files")
-    ap.add_argument("-txt", "--txt", required=True, type=str, widget='FileChooser', help="input tab-seperated txt file with fasta and genbank filenames in each row(with extensions .gb, .gbk, .fa, .fasta and column names genbank and fasta respectively)")
+    ap.add_argument("-txt", "--txt", required=True, type=str, widget='FileChooser', help="input 2-column tab-seperated txt file with genbank and fasta filenames respectively in each row(with extensions .gb, .gbk, .fa, .fasta )")
     ap.add_argument("-dir", "--directory", required=True, type=str, widget='DirChooser',  help="directory to search for vectors in genbank format and inserts in single-fasta files")
     args = vars(ap.parse_args())
 # main
 # set working directory
     os.chdir(args['directory'])
 # inport txt file and convert each column to list
-    df_txt = pd.read_csv(args['txt'], sep="\t")
+    df_txt = pd.read_csv(args['txt'], header=None, sep="\t")
     gb_list = df_txt.iloc[:,0].values.tolist()
     fasta_list = df_txt.iloc[:,1].values.tolist()
 # create lists
