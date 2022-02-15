@@ -5,6 +5,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqFeature
+import  pandas as pd
 # imput parameters
 @Gooey(required_cols=2, program_name='ligate in pairs single-fasta files with vectors', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
