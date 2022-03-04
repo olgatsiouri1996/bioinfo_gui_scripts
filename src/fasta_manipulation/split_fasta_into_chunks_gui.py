@@ -23,7 +23,7 @@ def main():
 	for record in SeqIO.parse(args['input'], "fasta"):
 		for i in range(0, len(record.seq) - int(args['window']) + 1, int(args['step'])):
 			seqs.append(record.seq[i:i + int(args['window'])])
-			headers.append('_'.join([record.id,str(i)]))
+			headers.append('_'.join([record.id,str(i + 1)]))
 	# export to multi or single-fasta
 	for (seq, header) in zip(seqs,headers):
 		chunks.append(SeqRecord(Seq(str(seq)),id=str(header),description=""))
