@@ -5,11 +5,11 @@ from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 # imput parameters
-@Gooey(required_cols=1, program_name= 'split multi-fasta to single-fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=2, program_name= 'split multi-fasta to single-fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
 	ap = GooeyParser()
 	ap.add_argument("-mfa", "--multifasta", required=True, widget='FileChooser', help="input multi-fasta file to split to single-fasta")
-	ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="output directory to save the single-fasta files")
+	ap.add_argument("-dir", "--directory", required=True, type=str, widget='DirChooser', help="output directory to save the single-fasta files")
 	args = vars(ap.parse_args())
 # main
 	records = SeqIO.parse(args['multifasta'], "fasta")
