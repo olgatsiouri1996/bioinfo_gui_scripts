@@ -7,11 +7,12 @@ from Bio.SeqRecord import SeqRecord
 from Bio import SeqFeature
 import  pandas as pd
 # imput parameters
-@Gooey(required_cols=2, program_name='ligate in pairs single-fasta files with vectors', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name='ligate in pairs single-fasta files with vectors', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser(description="ligate in pairs vectors in genbank format with annotations, with inserts in single-fasta files")
     ap.add_argument("-txt", "--txt", required=True, type=str, widget='FileChooser', help="input 2-column tab-seperated txt file with genbank and fasta filenames respectively in each row(with extensions .gb, .gbk, .fa, .fasta )")
     ap.add_argument("-dir", "--directory", required=True, type=str, widget='DirChooser',  help="directory to search for vectors in genbank format and inserts in single-fasta files")
+    ap.add_argument("-out", "--output", required=True, type=str, widget='DirChooser',  help="output directory to save the vectors in genbank format") 
     args = vars(ap.parse_args())
 # main
 # set working directory
@@ -35,6 +36,8 @@ def main():
     for i in fasta_list:
         record = SeqIO.read(i, "fasta")
         fasta_seqs.append(str(record.seq))
+# select directory for output genbank files
+    os.chdir(args['output'])
 # iterate all below lists in pairs
     for (a,b,c,d,e) in zip(gb_list,fasta_list,gb_seqs,gb_features,fasta_seqs):
     # merge
