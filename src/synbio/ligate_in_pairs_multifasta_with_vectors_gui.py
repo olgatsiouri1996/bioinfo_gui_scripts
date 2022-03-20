@@ -1,6 +1,8 @@
 # python3
 import os
 from gooey import *
+import warnings
+from Bio import BiopythonWarning
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -18,6 +20,8 @@ def main():
 # main
 # set working directory
     os.chdir(args['directory'])
+# remove warnings
+    warnings.simplefilter('ignore',BiopythonWarning)
 # inport txt file and convert each column to list
     df_txt = pd.read_csv(args['txt'], header=None, sep="\t")
     gb_list = df_txt.iloc[:,0].values.tolist()
