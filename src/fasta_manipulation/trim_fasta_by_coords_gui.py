@@ -6,9 +6,9 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import  pandas as pd
 # input parameters
-@Gooey(required_cols=1, program_name='trim a multi-fasta file or multiple single-fasta files based on a txt file with start and end coordinates', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=1, program_name='trim fasta by coords', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
-    ap = GooeyParser()
+    ap = GooeyParser(description='trim a multi-fasta file or multiple single-fasta files based on a txt file with start and end coordinates')
     ap.add_argument("-in", "--input", required=False, widget='FileChooser', help="input fasta file")
     ap.add_argument("-coords", "--coordinates", required=True, widget='FileChooser', help="input 4-column tab-seperated txt file with id, start, end positions and strand(+, -) respectively in each row")
     ap.add_argument("-type", "--type", required=False,default=1, type=int, help="type of fasta to import 1) 1 multi-fasta file 2)  many single-fasta files")
