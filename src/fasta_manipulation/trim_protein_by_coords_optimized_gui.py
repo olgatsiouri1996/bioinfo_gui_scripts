@@ -8,7 +8,7 @@ import  pandas as pd
 def main():
     ap = GooeyParser(description='trim a multi-fasta file with proteins based on a txt file with start and end coordinates')
     ap.add_argument("-in", "--input", required=True, widget="FileChooser", help="input fasta file")
-    ap.add_argument("-coords", "--coordinates", required=True, widget="FileChooser", help="input 4-column tab-seperated txt file with id, start and end positions respectively in each row")
+    ap.add_argument("-coords", "--coordinates", required=True, widget="FileChooser", help="input 3-column tab-seperated txt file with id, start and end positions respectively in each row")
     ap.add_argument("-out", "--output", required=True, widget="FileSaver", help="output multi-fasta file")
     args = vars(ap.parse_args())
     # main
