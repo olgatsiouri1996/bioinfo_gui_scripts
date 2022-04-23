@@ -1,6 +1,5 @@
 # python3
 from gooey import *
-import os
 import sys
 from pyfaidx import Fasta
 # input parameters
@@ -9,8 +8,8 @@ def main():
 	ap = GooeyParser()
 	ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input single or multi-fasta file")
 	ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output multi-fasta file")
-	ap.add_argument("-step", "--step", required=True, help="step size for chunk creation, type = integer")
-	ap.add_argument("-win", "--window", required=True, help="window size for chunk creation, type = integer")
+	ap.add_argument("-step", "--step", required=True, type=int, help="step size for chunk creation, type = integer")
+	ap.add_argument("-win", "--window", required=True, type=int, help="window size for chunk creation, type = integer")
 	args = vars(ap.parse_args())
 # main
 # create function to split the input sequence based on a specific number of characters(60)
