@@ -8,11 +8,11 @@ from Bio.SeqRecord import SeqRecord
 def main():
     ap = GooeyParser()
     ap.add_argument("-i", "--input", required=True, widget='FileChooser', help="input single or multi fasta file")
-    ap.add_argument("-d", "--descriptions", required=True, widget='FileChooser', help="input 1-column txt file with fasta_descriptions")
+    ap.add_argument("-d", "--descriptions", required=True, widget='FileChooser', help="input 1-column txt file with fasta descriptions")
     ap.add_argument("-o", "--output", required=True, widget='FileSaver',  help="output fasta file")
     args = vars(ap.parse_args())
     # main
-    # import file fasta fasta_descriptions
+    # import file with fasta descriptions
     with open(args['descriptions'], 'r') as f:
         fasta_descriptions = f.readlines()
     fasta_descriptions = [x.strip() for x in fasta_descriptions]
