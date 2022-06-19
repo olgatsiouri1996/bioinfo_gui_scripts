@@ -9,8 +9,6 @@ def main():
     ap.add_argument("-headers", "--headers", required=True, widget='FileSaver', help="1-column txt file to save the output fasta headers with descriptions")
     args = vars(ap.parse_args())
     # main
-    # create function to split the input sequence based on a specific number of characters(60)
-    def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
     # import fasta file
     features = Fasta(args['input'])
     # export to 1-column txt file
