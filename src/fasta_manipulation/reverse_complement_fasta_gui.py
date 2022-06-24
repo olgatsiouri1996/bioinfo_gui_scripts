@@ -2,7 +2,7 @@
 from gooey import *
 from Bio import SeqIO
 # input parameters
-@Gooey(required_cols=2, program_name='reverse complement fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=2, program_name='reverse complement  fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
   ap = GooeyParser()
   ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
@@ -12,7 +12,8 @@ def main():
   sequences = []  # setup an empty list
   for record in SeqIO.parse(args['input'], "fasta"):
         # add this record to the list
-      sequences.append(record.reverse_complement(record))
+      record.seq = record.seq.reverse_complement()
+      sequences.append(record)
 
   SeqIO.write(sequences, args['output'], "fasta")
 
