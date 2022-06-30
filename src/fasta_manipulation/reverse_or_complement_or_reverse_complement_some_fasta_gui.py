@@ -2,12 +2,12 @@
 from gooey import *
 from Bio import SeqIO
 # input parameters
-@Gooey(required_cols=3, program_name='reverse complement or reverse some fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name='reverse or complement or reverse complement some fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
-    ap = GooeyParser(description="reverse complement or reverse some sequences in a multi-fasta file")
+    ap = GooeyParser(description="reverse or complement or reverse complement some sequences in a multi-fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
-    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="file with fasta headers to reorient some output fasta sequences")
-    ap.add_argument("-pro", "--program", required=False, default=1, type=int, help="program to choose 1. reverse complement, 2. reverse")
+    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="file with fasta headers to reorient some input fasta sequences")
+    ap.add_argument("-pro", "--program", required=False, default=1, type=int, help="program to choose 1. reverse complement, 2. reverse, 3. complement")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output fasta file")
     args = vars(ap.parse_args())
 # main
@@ -28,11 +28,21 @@ def main():
                 sequences.append(record)
 # export to fasta
         SeqIO.write(sequences, args['output'], "fasta")
-    else:
+    elif args['program'] == 2:
         for record in SeqIO.parse(args['input'], "fasta"):
             if record.id in headers:
             # add this record to the list
                 sequences.append(record[::-1])
+            else:
+                sequences.append(record)
+# export to fasta
+        SeqIO.write(sequences, args['output'], "fasta")
+    else:
+        for record in SeqIO.parse(args['input'], "fasta"):
+            if record.id in headers:
+            # add this record to the list
+                record.seq = record.seq.complement()
+                sequences.append(record)
             else:
                 sequences.append(record)
 # export to fasta
