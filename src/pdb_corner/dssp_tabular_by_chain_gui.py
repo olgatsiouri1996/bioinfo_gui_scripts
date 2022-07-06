@@ -34,18 +34,14 @@ def main():
     df = df.iloc[:, [3,0,1,2]]
     # choose program
     if args['program'] == 1:
-        # export
-        with open(args['output'], 'a') as f:
-            f.write(
-                df.to_csv(header = ['chain','residue_number','residue_name', 'residue_structure'], index = False, sep= "\t", doublequote= False, line_terminator= '\n')
-            )
+        pass
     else:
         df = df.loc[int(args['start'] -1):int(args['end'] -1)]
-        # export
-        with open(args['output'], 'a') as f:
-            f.write(
-                df.to_csv(header = ['chain','residue_number','residue_name', 'residue_structure'], index = False, sep= "\t", doublequote= False, line_terminator= '\n')
-            )
+    # export
+    with open(args['output'], 'a') as f:
+        f.write(
+            df.to_csv(header = ['chain','residue_number','residue_name', 'residue_structure'], index = False, sep= "\t", doublequote= False, line_terminator= '\n')
+        )
     # remove intermediate file
     os.system("rm *out.pdb")
 
