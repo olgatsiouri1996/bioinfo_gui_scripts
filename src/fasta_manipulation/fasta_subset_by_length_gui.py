@@ -13,29 +13,27 @@ def main():
 	ap.add_argument("-headers", "--headers", required=False, widget='FileSaver', help="file to save the output fasta headers")
 	args = vars(ap.parse_args())
 	# main
-	# choose program
-	program = args['program']
-	# select sequences
-	if program == 1:
-	    sequences = []  # setup an empty list
-	    for record in SeqIO.parse(args['input'], "fasta"):
-	        if int(args['min']) <= len(record.seq) <= int(args['max']):
-	            # add this record to the list
-	            record.description = ''.join(["length:"," ",str(len(record.seq))," ",str(record.description).split(record.id)[1]])
-	            sequences.append(record)
-	    # export to fasta1
-	    SeqIO.write(sequences, args['output'], "fasta")
-	# retrieve headers only
-	else:
-	    headers = []  # setup an empty list
-	    for record in SeqIO.parse(args['input'], "fasta"):
-	        if int(args['min']) <= len(record.seq) <= int(args['max']):
-	            # add this record to the list
-	            headers.append(record.id)
-	    # export to txt
-	    with open(args['headers'], 'w') as filehandle:
-	        for listitem in headers:
-	            filehandle.write('%s\n' % listitem)
+    # choose program
+    program = args['program']
+    # create function to split the input sequence based on a specific number of characters(60)
+    def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
+    # create fasta index
+    features = Fasta(args['input'])
+    # select sequences
+    if program == 1:
+        sys.stdout = open(args['output'], 'a')
+        for key in features.keys():
+            if int(args['min']) <= features[key][:].end <= int(args['max']):
+                print(''.join([">",features[key].long_name," ","length:"," ",str(features[key][:].end)]))
+                print('\n'.join(split_every_60(features[key][:].seq)))
+        sys.stdout.close()
+    # retrieve headers only
+    else:
+        # export to txt
+        with open(args['headers'], 'w') as filehandle:
+            for key in features.keys():
+                if int(args['min']) <= features[key][:].end <= int(args['max']):
+                    filehandle.write('%s\n' % key)
 
 if __name__ == '__main__':
 	main()
