@@ -9,9 +9,9 @@ from pyfaidx import Fasta
 def main():
     ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
-    ap.add_argument("-ids", "--ids", required=True, help="file with fasta headers to retrieve the output fasta sequences")
+    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="file with fasta headers to retrieve the output fasta sequences")
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta file")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', default='.', help="output directory to save the single-fasta files. Default is the current directory")
+    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files.")
     ap.add_argument("-pro", "--program",type=int, default=1, required=False, help="choose to: 1) extract sequences from a multi-fasta file, 2) extract many single-fasta files, 3) remove sequences from a multi-fasta file, 4) remove sequences and export to many single-fasta files . Defaults to 1")
     args = vars(ap.parse_args())
     # main
