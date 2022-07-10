@@ -1,7 +1,6 @@
 # python3
 from gooey import *
-from Bio import SeqIO
-import pandas as pd
+from pyfaidx import Fasta
 # input parameters
 @Gooey(required_cols=2, program_name= 'count length from fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
