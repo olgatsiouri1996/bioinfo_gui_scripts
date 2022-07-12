@@ -3,7 +3,7 @@ import sys
 from gooey import *
 from pyfaidx import Fasta
 # imput parameters
-@Gooey(required_cols=1, program_name='intersect fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name='intersect fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
     ap.add_argument("-fa1", "--fasta1", required=True, widget='FileChooser', help="input multi fasta file")
