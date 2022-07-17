@@ -12,6 +12,7 @@ def main():
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output fasta file")
     ap.add_argument("-fea", "--feature", required=False, default='gene',  type=str, help="specify the pattern to select the lines that have it")
+    ap.add_argument("-pro", "--program", required=False, default=1, type=int, help="program to choose: 1) filter the bed file before retrieving sequences, 2) do not filter")
     args = vars(ap.parse_args())
     # main
     # create function to split the input sequence based on a specific number of characters(60)
@@ -20,9 +21,13 @@ def main():
     warnings.filterwarnings('ignore')
     # import bed with no headers specified
     df = pd.read_csv(args['bed'], sep= "\t", header=None)
-    # select the rows containing the feature
-    bool2 = df.iloc[:, 7].str.contains(args['feature']) 
-    df = df[bool2]
+    # choose program
+    if args['program'] == 1:
+        # select the rows containing the feature
+        bool2 = df.iloc[:, 7].str.contains(args['feature']) 
+        df = df[bool2]
+    else:
+        pass
     # convert each column to list
     chrom = df.iloc[:,0].values.tolist()
     start = df.iloc[:,1].values.tolist()
