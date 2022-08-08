@@ -1,25 +1,26 @@
 # python3
 from gooey import *
 from pyfaidx import Fasta
-import pandas as pd
-import warnings
 # input parameters
 @Gooey(required_cols=2, program_name= 'hardmask fasta with bed', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
-    ap = GooeyParser(description="ovewrite and hardmask a multi-fasta")
+    ap = GooeyParser(description="ovewrite and hardmask a multi-fasta file")
     ap.add_argument("-bed", "--bed", required=True, widget='FileChooser', help="input bed file(made with bedops)")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
     ap.add_argument("-type", "--type", required=False, type=str, default='nt', help="sequence type: nt or aa")
     args = vars(ap.parse_args())
     # main
-    # ignore warnings
-    warnings.filterwarnings('ignore')
-    # import bed with no headers specified
-    df = pd.read_csv(args['bed'], sep= "\t", header=None)
-    # convert each column to list
-    chrom = df.iloc[:,0].values.tolist()
-    start = df.iloc[:,1].values.tolist()
-    end = df.iloc[:,2].values.tolist()
+    # setup empty lists
+    chrom = []
+    start = []
+    end = []
+    # import bed 
+    with open(args['bed'], 'r') as f:
+        for line in f:
+            # convert each column to list
+            chrom.append(line.split()[0])
+            start.append(line.split()[1])
+            end.append(line.split()[2])
     # import fasta file
     features = Fasta(args['input'],mutable=True)
     # choose sequence type
