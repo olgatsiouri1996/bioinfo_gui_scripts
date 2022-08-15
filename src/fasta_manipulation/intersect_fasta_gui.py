@@ -24,7 +24,7 @@ def main():
         # iterate the following 2 lists
         for key in features1.keys():
             if key in features2.keys():
-                print(''.join([">",features1[key].long_name]))
+                print(''.join([">",features1[key].long_name]).replace('\r',''))
                 print('\n'.join(split_every_60(features1[key][:].seq)))
         sys.stdout.close()
     else:
@@ -33,7 +33,7 @@ def main():
         # iterate the following 2 lists
         for key in features1.keys():
             if key not in features2.keys():
-                print(''.join([">",features1[key].long_name]))
+                print(''.join([">",features1[key].long_name]).replace('\r',''))
                 print('\n'.join(split_every_60(features1[key][:].seq)))
         sys.stdout.close()
 

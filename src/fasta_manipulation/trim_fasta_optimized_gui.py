@@ -38,7 +38,7 @@ def main():
             args['stop'] = features[fastarec][:].end
             seq_end = args['stop']
     # subset each fasta record
-        print(''.join([">",features[fastarec][seq_start:seq_end].fancy_name]))
+        print(''.join([">",features[fastarec][seq_start:seq_end].fancy_name]).replace('\r', ''))
         print('\n'.join(split_every_60(features[fastarec][seq_start:seq_end].seq)))
         return
     # import fasta file

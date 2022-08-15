@@ -32,7 +32,7 @@ def main():
             # iterate input headers to extract sequences and export as multi-fasta
             sys.stdout = open(args['output'], 'a')
             for header in headers:
-                print(''.join([">",features[str(header)].long_name]))
+                print(''.join([">",features[str(header)].long_name]).replace('\r',''))
                 print('\n'.join(split_every_60(features[str(header)][:].seq)))
             sys.stdout.close()
         case 2:
@@ -40,7 +40,7 @@ def main():
             os.chdir(args['directory'])
             for header in headers:
                 sys.stdout = open(''.join([str(header),".fasta"]), 'a')
-                print(''.join([">",features[str(header)].long_name]))
+                print(''.join([">",features[str(header)].long_name]).replace('\r',''))
                 print('\n'.join(split_every_60(features[str(header)][:].seq)))
                 sys.stdout.close()
         case 3:
@@ -51,7 +51,7 @@ def main():
             # export to 1 multi-fasta
             sys.stdout = open(args['output'], 'a')
             for key in keyslist:
-                print(''.join([">",features[str(key)].long_name]))
+                print(''.join([">",features[str(key)].long_name]).replace('\r',''))
                 print('\n'.join(split_every_60(features[str(key)][:].seq)))
             sys.stdout.close()
         case 4:
@@ -63,7 +63,7 @@ def main():
             os.chdir(args['directory'])
             for key in keyslist:
                 sys.stdout = open(''.join([str(key),".fasta"]), 'a')
-                print(''.join([">",features[str(key)].long_name]))
+                print(''.join([">",features[str(key)].long_name]).replace('\r',''))
                 print('\n'.join(split_every_60(features[str(key)][:].seq)))
                 sys.stdout.close()
 

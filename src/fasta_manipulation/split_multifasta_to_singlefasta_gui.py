@@ -19,7 +19,7 @@ def main():
 # export each record to a single-fasta    
 	for key in features.keys():
 	    sys.stdout = open(''.join([str(key),".fasta"]), 'a')
-	    print(''.join([">",features[str(key)].long_name]))
+	    print(''.join([">",features[str(key)].long_name]).replace('\r',''))
 	    print('\n'.join(split_every_60(features[str(key)][:].seq)))
 	    sys.stdout.close()
 
