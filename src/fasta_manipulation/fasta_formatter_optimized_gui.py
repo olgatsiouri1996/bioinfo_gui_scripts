@@ -8,7 +8,7 @@ def main():
     ap = GooeyParser(description="indexes the input fasta file for memory efficiency and changes the width of fasta sequences")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver',  help="output fasta file")
-    ap.add_argument("-width", "--width", required=False, type=int, default=80, help="number of characters per line. Default is  80")
+    ap.add_argument("-width", "--width", required=False, type=int, default=80, help="number of characters per line")
     args = vars(ap.parse_args())
     # main
     # create function to split the input sequence based on a specific number of characters
