@@ -10,7 +10,7 @@ def main():
     ap = GooeyParser()
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-id", "--identifier", required=True, type=str, help="fasta identifier to retrieve the fasta sequence for")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta file.")
+    ap.add_argument("-dir", "--directory", required=True, type=str, widget='DirChooser',  help="output directory to save the single-fasta file.")
     args = vars(ap.parse_args())
     # main
     # create function to split the input sequence based on a specific number of characters(60)
