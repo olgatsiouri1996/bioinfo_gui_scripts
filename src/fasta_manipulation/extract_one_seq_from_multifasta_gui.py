@@ -20,7 +20,7 @@ def main():
     # extract 1 fasta record based on a fasta identifier
     os.chdir(args['directory'])
     sys.stdout = open(''.join([args['identifier'],".fasta"]), 'a')
-    print(''.join([">",features[args['identifier']].long_name]))
+    print(''.join([">",features[args['identifier']].long_name]).replace('\r', ''))
     print('\n'.join(split_every_60(features[args['identifier']][:].seq)))
     sys.stdout.close()
 
