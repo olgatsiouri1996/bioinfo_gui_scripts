@@ -2,7 +2,6 @@
 from gooey import *
 import os
 import sys
-import argparse
 from pyfaidx import Fasta
 # input parameters
 @Gooey(required_cols=3, program_name= 'extract one sequences from fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
