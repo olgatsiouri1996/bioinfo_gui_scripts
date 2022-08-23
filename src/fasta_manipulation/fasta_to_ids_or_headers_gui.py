@@ -6,7 +6,7 @@ import pyfastx
 @Gooey(required_cols=2, program_name= 'retrieve identifiers or full fasta headers from fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
-    ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
+    ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file(all fasta records should either have no fasta description or all of them should have fasta description)")
     ap.add_argument("-txt", "--txt", required=True, widget='FileSaver', help="1 or 2-column txt file to save the output fasta identifiers or full fasta  headers with identifier and description respectively")
     ap.add_argument("-pro", "--program", required=False, type=int, default=1, help="program to choose: 1. retrieve only fasta identifiers 2. retrieve fasta identifiers and fasta headers (tab seperated)")
     args = vars(ap.parse_args())
