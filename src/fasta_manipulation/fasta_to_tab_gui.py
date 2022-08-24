@@ -7,7 +7,7 @@ import pyfastx
 def main():
     ap = GooeyParser()
     ap.add_argument("-in","--input", required=True, widget='FileChooser',help="input multi-fasta file(all fasta records should either have no fasta description or all of them should have fasta description)")
-    ap.add_argument("-pro", "--program", required=False, default=1, type=int, help="output to choose: 1) 2-column txt file with fasta identifiers and fasta sequences 2) 2-column txt file with full fasta headers and fasta sequences 3) 3-column txt file with fasta identifiers, fasta descriptions and fasta sequences. Default is 1")
+    ap.add_argument("-pro", "--program", required=False, default=1, type=int, help="output to choose: 1) 2-column txt file with fasta identifiers and fasta sequences 2) 2-column txt file with full fasta headers and fasta sequences 3) 3-column txt file with fasta identifiers, fasta descriptions and fasta sequences")
     ap.add_argument("-out","--output", required=True, widget='FileSaver', help="output txt file")
     args = vars(ap.parse_args())
     # main
