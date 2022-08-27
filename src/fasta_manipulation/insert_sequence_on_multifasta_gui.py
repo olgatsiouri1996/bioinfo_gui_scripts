@@ -5,7 +5,7 @@ from pyfaidx import Fasta
 # input parameters
 @Gooey(required_cols=4, program_name= 'insert sequence on multi-fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
-    ap = GooeyParser(description="insert a sequence at  specific positions in a multi-fasta file")
+    ap = GooeyParser(description="insert a sequence at specific positions in a multi-fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser',  help="input multi-fasta file")
     ap.add_argument("-is", "--insert", required=True, widget='FileChooser', help="input single-fasta file with the sequence to insert")
     ap.add_argument("-pos", "--position", required=True, widget='FileChooser', help="tab seperated 2-column txt file with id and positions (in the fasta file after which to insert the sequence) as columns")
