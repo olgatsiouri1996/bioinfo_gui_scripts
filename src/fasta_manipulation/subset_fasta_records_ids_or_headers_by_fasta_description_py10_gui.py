@@ -39,7 +39,7 @@ def main():
             with open(args['headers'], 'a') as filehandle:
                 for key in features.keys():
                     if args['match'] in features[key].long_name:
-                        filehandle.write('%s\n' % '\t'.join([key,str(features[key].long_name).split(key)[1]]))
+                        filehandle.write('%s\n' % '\t'.join([key,str(features[key].long_name).split(' ',1)[1]]))
 
 if __name__ == '__main__':
     main()
