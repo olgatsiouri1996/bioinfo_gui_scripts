@@ -11,7 +11,7 @@ def main():
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta file. File can be appended")
     ap.add_argument("-headers", "--headers", required=False, widget='FileSaver', help="1 or 2-column tab seperated txt file to save the output fasta identifiers or full fasta headers respectively. File can be appended")
     ap.add_argument("-pro", "--program", required=False, type=int, default=1, widget='Dropdown', choices=[1,2,3], help="Program to choose: 1) collect fasta records with headers that match the pattern 2) collect only fasta identifiers, 3) collect full fasta headers(id and description are tab seperated).")
-    ap.add_argument("-act", "--action", required=False, type=str, default='extract', widget='Dropdown', choices=['extract','remove'], help="choose to extract or removed based on the chromosome.")
+    ap.add_argument("-act", "--action", required=False, type=str, default='extract', widget='Dropdown', choices=['extract','remove'], help="choose to extract or remove based on the chromosome.")
     args = vars(ap.parse_args())
     # main
     # create function to split the input sequence based on a specific number of characters(60)
