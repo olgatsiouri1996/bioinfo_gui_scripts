@@ -1,6 +1,8 @@
 # python3
 import os
 from gooey import *
+import warnings
+from Bio import BiopythonWarning
 from Bio.PDB import *
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -10,15 +12,17 @@ from Bio.SeqRecord import SeqRecord
 def main():
     ap = GooeyParser()
     ap.add_argument("-pdb", "--pdb", required=False, widget='FileChooser', help="input pdb file")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="directory to search for fasta files")        
+    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="directory to search for pdb files")        
     ap.add_argument("-model", "--model",required=False, default=0, help="model from pdb file to select(integer). Default is 0(1 model only)")
     ap.add_argument("-chain", "--chain", required=False, default='A', help="chain from pdb file to select. Default is A")
     ap.add_argument("-start", "--start", required=False, default=1, type=int, help="amino acid in chain to start writing the fasta file")
     ap.add_argument("-end", "--end", required=False, type=int, help="amino acid in chain to end writing the fasta file")
-    ap.add_argument("-pro", "--program", required=False,default=1, type=int, help="program to choose 1) add both start and end location 2) the end location will be that of the latest amino acid in the chain. Default is 1")
-    ap.add_argument("-type", "--type", required=False,default=1, type=int, help="type of input to choose. 1) 1 pdb file, 2) many pdb files. Default is 1")
+    ap.add_argument("-pro", "--program", required=False,default=1, type=int, widget='Dropdown', choices=[1,2], help="program to choose: 1) add both start and end location 2) the end location will be that of the latest amino acid in the chain.")
+    ap.add_argument("-type", "--type", required=False,default=1, type=int, widget='Dropdown', choices=[1,2],  help="type of input to choose: 1) 1 pdb file, 2) many pdb files.")
     args = vars(ap.parse_args())
     # main
+    # ignore warnings
+    warnings.simplefilter('ignore', BiopythonWarning)
     # create function to trim + convert to fasta
     def trim_to_fasta(fi):
         # select chain
@@ -65,7 +69,7 @@ def main():
         s = parser.get_structure("name", args['pdb'])
         trim_to_fasta(args['pdb'])
     else:
-        # import each fasta file from the working directory
+        # import each pdb file from the working directory
         for filename in sorted(os.listdir(os.chdir(args['directory']))):
             if filename.endswith(".pdb"):
                 parser = PDBParser()
