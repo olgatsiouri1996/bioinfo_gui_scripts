@@ -12,7 +12,8 @@ from Bio.SeqRecord import SeqRecord
 def main():
     ap = GooeyParser()
     ap.add_argument("-pdb", "--pdb", required=False, widget='FileChooser', help="input pdb file")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="directory to search for pdb files")        
+    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="directory to search for pdb files")
+    ap.add_argument("-out", "--output", required=False, type=str, widget='DirChooser', help="output directory to save the fasta file for the 1 pdb file mode only")                
     ap.add_argument("-model", "--model",required=False, default=0, help="model from pdb file to select(integer). Default is 0(1 model only)")
     ap.add_argument("-chain", "--chain", required=False, default='A', help="chain from pdb file to select. Default is A")
     ap.add_argument("-start", "--start", required=False, default=1, type=int, help="amino acid in chain to start writing the fasta file")
@@ -64,7 +65,8 @@ def main():
         record = SeqRecord(Seq(sub_seq),id="".join([str(pdb_id),"_",str(args['chain']),"_",str(args['start']),"_",str(args['end'])]),description="")
         return SeqIO.write(record, "".join([str(pdb_id),"_",str(args['chain']),"_",str(args['start']),"_",str(args['end']),".fasta"]), "fasta")
     # select between importing 1 or many pdb files
-    if args['type'] == 1:    
+    if args['type'] == 1: 
+        os.chdir(args['output'])   
         parser = PDBParser()
         s = parser.get_structure("name", args['pdb'])
         trim_to_fasta(args['pdb'])
