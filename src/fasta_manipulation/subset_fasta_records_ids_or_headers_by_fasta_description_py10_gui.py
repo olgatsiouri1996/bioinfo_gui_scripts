@@ -3,7 +3,7 @@ from gooey import *
 import sys
 from pyfaidx import Fasta
 # input parameters
-@Gooey(required_cols=1, program_name= 'subset fasta records, ids or headers by fasta description', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=1, program_name= 'extract or remove fasta records, ids or headers by fasta description', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser()
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
@@ -14,7 +14,7 @@ def main():
     ap.add_argument("-act", "--action", required=False, type=str, default='extract', widget='Dropdown', choices=['extract','remove'], help="extract or remove based on patterns")
     args = vars(ap.parse_args())
     # main
-   # create function to split the input sequence based on a specific number of characters(60)
+    # create function to split the input sequence based on a specific number of characters(60)
     def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
     # import the txt file with words from headers you want to extract the sequence from the input fasta
     with open(args['matches'], 'r') as f:
