@@ -5,7 +5,7 @@ import os
 # imput parameters
 @Gooey(required_cols=5, program_name='genomic genbank to gene with annotations', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
-	ap = GooeyParser(description="retrieve gene from genbank with annotations")
+	ap = GooeyParser(description="retrieve gene from genbank in genbank format containing the sequence, UTR's and exon-intron boundaries")
 	ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input genomic genbank file")
 	ap.add_argument("-chr", "--chr", required=True, type=str, help="chromosome/scaffold/contig the gene is located")
 	ap.add_argument("-start", "--start", required=True, type=int, help="start of the gene in the chromosome/scaffold/contig")
@@ -18,9 +18,13 @@ def main():
 		if record.id == args['chr']:
 			trimmed = record[int(args['start'] -1):args['end']]
 	# retrieve the id of the gene to use as an output filename
-	for f in trimmed.features:
-		if f.type == 'gene' in f.qualifiers:
-			filename = f.qualifiers[args['qualifier']][0]
+	try:
+		for f in trimmed.features:
+			if f.type == 'gene' in f.qualifiers:
+				filename = f.qualifiers[args['qualifier']][0]
+	except KeyError:
+		print("This qualifier does not exist. Use the other one")
+		exit(1)
 	# select directory to export to
 	os.chdir(args['directory'])
 	# export to genbank format
