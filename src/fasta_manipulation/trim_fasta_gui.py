@@ -3,7 +3,7 @@ import os
 from gooey import *
 from Bio import SeqIO
 # input parameters
-@Gooey(required_cols=0, program_name='trim  a multi-fasta file or multiple single-fasta files', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=0, program_name='trim a multi-fasta file or multiple single-fasta files', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser() 
     ap.add_argument("-in", "--input", required=False ,widget='FileChooser', help="input fasta file")
