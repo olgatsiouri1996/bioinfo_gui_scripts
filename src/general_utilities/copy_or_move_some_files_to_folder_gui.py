@@ -9,8 +9,8 @@ def main():
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input 1-column txt file with filenames to copy")
     ap.add_argument("-ext", "--extension", required=False, type=str, default='.fasta', help="extension of the input files")
     ap.add_argument("-act", "--action", required=False, type=str, default='copy', choices=['copy','move'], help="copy or move selected files")
-    ap.add_argument("-dir", "--directory", required=True, type=str, widget='DirChooser', help="directory with files to copy")
-    ap.add_argument("-out", "--output", required=True, type=str, widget='DirChooser', help="directory to save copied files")
+    ap.add_argument("-dir", "--directory", required=True, type=str, widget='DirChooser', help="directory with files to copy or move")
+    ap.add_argument("-out", "--output", required=True, type=str, widget='DirChooser', help="directory to save copied or moved files")
     args = vars(ap.parse_args())
     # main
     # add filenames to copy
