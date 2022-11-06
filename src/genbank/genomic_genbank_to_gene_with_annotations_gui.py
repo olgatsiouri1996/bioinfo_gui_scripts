@@ -17,31 +17,27 @@ def main():
 	ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="director to save output genbank files")
 	args = vars(ap.parse_args())
 	# choose number of output files
+	# import genbank file
+	record = SeqIO.index(args['input'], "genbank")
 	if args['number']=='one':
 		# retrieve the gene with annotations from the genomic genbank file
-		for record in SeqIO.parse(args['input'], "genbank"):
-			if record.id == args['chr']:
-				trimmed = record[int(args['start'] -1):args['end']]
+		trimmed = record[args['chr']][int(args['start'] -1):args['end']]
 		# export to genbank format
 		SeqIO.write(trimmed, args['genbank'], "genbank")
 	else:
-		trimmed = [] # setup empty list
 		# import txt file
 		df = pd.read_csv(args['txt'], header=None, sep="\t")
 		chrom = df.iloc[:,0].values.tolist()
 		start = df.iloc[:,1].values.tolist()
 		end = df.iloc[:,2].values.tolist()
 		identifier = df.iloc[:,3].values.tolist()
-		# retrieve the gene with annotations from the genomic genbank file
-		for (a, b, c) in zip(chrom, start, end):
-			for record in SeqIO.parse(args['input'], "genbank"):
-				if record.id == str(a):
-					trimmed.append(record[int(int(b) -1):int(c)])
 		# change output directory
 		os.chdir(args['directory'])
-		for (rec, ids) in zip(trimmed, identifier):
+		# retrieve the gene with annotations from the genomic genbank file
+		for (a, b, c, d) in zip(chrom, start, end, identifier):
+			trimmed = record[str(a)][int(int(b) -1):int(c)]
 		# export to genbank format
-			SeqIO.write(rec, ''.join([str(ids),'.gb']), "genbank")			
+			SeqIO.write(trimmed, ''.join([str(d),'.gb']), "genbank")			
 
 if __name__ == '__main__':
 	main()
