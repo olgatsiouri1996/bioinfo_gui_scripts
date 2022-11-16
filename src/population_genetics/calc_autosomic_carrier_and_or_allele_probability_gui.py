@@ -19,7 +19,7 @@ def main():
     # choose an output based on the calculation type
     sys.stdout = open(args['output'],'w')
     if args['type'] == 'allele':
-        print('probability_of_allele','probability_of_homozygous_individuals','allele_frequency',sep='\t',end='\n')
+        print('probability_of_containing_allele','probability_of_homozygous_individuals','allele_frequency',sep='\t',end='\n')
         for i in A:
             print("%.3f" % round(2*i**0.5-i,3),"%.3f" % round(i,3),"%.3f" % round(i**0.5,3),sep='\t',end='\n')
     elif args['type'] == 'carrier':
@@ -28,7 +28,7 @@ def main():
             p = i**0.5
             print("%.3f" % round(2*p*(1-p),3),"%.3f" % round(i,3),"%.3f" % round(p,3),sep='\t',end='\n')
     else:
-        print('probability_of_allele','probability_of_carriers','probability_of_homozygous_individuals','allele_frequency',sep='\t',end='\n')
+        print('probability_of_containing_allele','probability_of_carriers','probability_of_homozygous_individuals','allele_frequency',sep='\t',end='\n')
         for i in A:
             p = i**0.5
             print("%.3f" % round(2*i**0.5-i,3),"%.3f" % round(2*p*(1-p),3),"%.3f" % round(i,3),"%.3f" % round(p,3),sep='\t',end='\n')
