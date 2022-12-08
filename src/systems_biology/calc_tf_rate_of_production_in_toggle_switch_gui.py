@@ -2,7 +2,7 @@
 from gooey import *
 import sys
 # input parameters
-@Gooey(required_cols=5, program_name='calculate transcriptional repressor rate of production using tf concetrations in a toggle switch', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=6, program_name='calculate transcriptional repressor rate of production using tf concetrations in a toggle switch', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser(description='calculate transcriptional repressor rate of production using tf concetrations in a toggle switch')
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="2-column input txt file with the concetrations of the 2 repressors(no headers)")
