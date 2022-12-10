@@ -59,5 +59,6 @@ def main():
         for filename in sorted(os.listdir(os.chdir(args['directory']))):
             if filename.endswith(".pdb"):
                trim_to_fasta(filename)
+
 if __name__ == '__main__':
     main()
