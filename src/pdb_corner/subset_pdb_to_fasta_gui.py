@@ -4,11 +4,12 @@ import sys
 from gooey import *
 from biopandas.pdb import PandasPdb
 # input parameters
-@Gooey(required_cols=0, program_name='subset pdb to fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=1, program_name='subset pdb to fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
-    ap = GooeyParser(description="converts a pdb file into a fasta file based on the chain, start and end locations")
+    ap = GooeyParser(description="converts a pdb file into a single-fasta file based on the chain, start and end locations")
     ap.add_argument("-in", "--input", required=False, widget='FileChooser', help="input pdb file")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="directory to search for pdb files(the directory can contain many filetypes)")
+    ap.add_argument("-out", "--output", required=True, type=str, widget='DirChooser', help="directory to save 1 or more single-fasta files(the directory can contain many filetypes)")
     ap.add_argument("-chain", "--chain", required=False, default='A', help="chain from pdb file to select")
     ap.add_argument("-start", "--start", required=False, default=1, type=int, help="amino acid in chain to start writing the fasta file")
     ap.add_argument("-end", "--end", required=False, type=int, help="amino acid in chain to end writing the fasta file")
@@ -41,13 +42,8 @@ def main():
             basename = str(os.path.basename(fi)).split('.')[0]
         else:
             basename = str(fi).split('.')[0]
-        # if 1 pdb file only select output directory
-        if args['type'] == 1:
-            os.chdir(os.path.dirname(fi))
-        else:
-            pass
         # export to fasta
-        sys.stdout = open(''.join([basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end),".fasta"]), 'a')
+        sys.stdout = open(os.path.join(args['output'],''.join([basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end),".fasta"])), 'a')
         print(''.join([">",basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end)]).replace('\r',''))
         print('\n'.join(split_every_60(prot)))
         sys.stdout.close()
