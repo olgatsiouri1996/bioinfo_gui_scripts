@@ -8,9 +8,9 @@ def main():
     ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="file with fasta headers to retrieve the output fasta sequences")
-    ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or 3-column txt file with id, description, seq as headers")
+    ap.add_argument("-pro", "--program",type=str, default='extract sequences from a multi-fasta file', required=False, choices=['extract sequences from a multi-fasta file','extract many single-fasta files','remove sequences from a multi-fasta file','remove sequences and export to many single-fasta files','extract sequences to a 2-column txt file','remove sequences and export the rest to a 2-column txt file','extract sequences to a 3-column txt file','remove sequences and export the rest to a 3-colmn txt file'], widget='Dropdown', help="program to choose")
+    ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or a 2-column or a 3-column txt file with id, seq or id, description, seq as headers respectively")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files.")
-    ap.add_argument("-pro", "--program",type=str, default='extract sequences from a multi-fasta file', required=False, choices=['extract sequences from a multi-fasta file','extract many single-fasta files','remove sequences from a multi-fasta file','remove sequences and export to many single-fasta files','extract sequences to a txt file','remove sequences and export the rest to a txt file'], widget='Dropdown', help="program to choose")
     args = vars(ap.parse_args())
     # main
     # helper function to wrap fasta sequence to 60 characters per line
@@ -53,7 +53,22 @@ def main():
                 with open(str(key)+".fasta", 'w') as f:
                     f.write(f'>{str(features[str(key)].long_name).rstrip()}\n{wrap_fasta_seq(features[str(key)][:].seq)}\n')
                 # extract a multi-fasta file
-        case 'extract sequences to a txt file':           
+        case 'extract sequences to a 2-column txt file':           
+            # iterate input headers to extract sequences and export as 3 column txt
+            with  open(args['output'], 'w') as f:
+                f.write(f'{"id"}\t{"seq"}\n')
+                for header in headers:
+                    f.write(f'{str(header)}\t{features[str(header)][:].seq}\n')
+        case 'remove sequences and export the rest to a 2-column txt file':
+            # remove ids           
+            keyslist = (features.keys())
+            final_keys = (set(keyslist).difference(headers))            
+            # iterate input headers to extract sequences and export as 3 column txt
+            with  open(args['output'], 'w') as f:
+                f.write(f'{"id"}\t{"seq"}\n')
+                for key in final_keys:
+                    f.write(f'{str(key)}\t{features[str(key)][:].seq}\n')
+        case 'extract sequences to a 3-column txt file':           
             # iterate input headers to extract sequences and export as 3 column txt
             with  open(args['output'], 'w') as f:
                 f.write(f'{"id"}\t{"description"}\t{"seq"}\n')
@@ -62,7 +77,7 @@ def main():
                         f.write(f'{str(header)}\t{str(str(features[str(header)].long_name).rstrip()).split(" ",1)[1]}\t{features[str(header)][:].seq}\n')
                     except IndexError:
                         f.write(f'{str(header)}\t{""}\t{features[str(header)][:].seq}\n')
-        case 'remove sequences and export the rest to a txt file':
+        case 'remove sequences and export the rest to a 3-column txt file':
             # remove ids           
             keyslist = (features.keys())
             final_keys = (set(keyslist).difference(headers))            
