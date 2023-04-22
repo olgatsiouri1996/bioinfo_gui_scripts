@@ -59,9 +59,9 @@ def main():
                 f.write(f'{"id"}\t{"description"}\t{"seq"}\n')
                 for header in headers:
                     try:
-                        f.write(f'{str(header)}\t{str(str(features[str(header)].long_name).rstrip()).split(" ",1)[1]}\t{wrap_fasta_seq(features[str(header)][:].seq)}\n')
+                        f.write(f'{str(header)}\t{str(str(features[str(header)].long_name).rstrip()).split(" ",1)[1]}\t{features[str(header)][:].seq}\n')
                     except IndexError:
-                        f.write(f'{str(header)}\t{""}\t{wrap_fasta_seq(features[str(header)][:].seq)}\n')
+                        f.write(f'{str(header)}\t{""}\t{features[str(header)][:].seq}\n')
         case 'remove sequences and export the rest to a txt file':
             # remove ids           
             keyslist = (features.keys())
@@ -71,9 +71,9 @@ def main():
                 f.write(f'{"id"}\t{"description"}\t{"seq"}\n')
                 for key in final_keys:
                     try:
-                        f.write(f'{str(key)}\t{str(str(features[str(key)].long_name).rstrip()).split(" ",1)[1]}\t{wrap_fasta_seq(features[str(key)][:].seq)}\n')
+                        f.write(f'{str(key)}\t{str(str(features[str(key)].long_name).rstrip()).split(" ",1)[1]}\t{features[str(key)][:].seq}\n')
                     except IndexError:
-                        f.write(f'{str(key)}\t{""}\t{wrap_fasta_seq(features[str(key)][:].seq)}\n')
+                        f.write(f'{str(key)}\t{""}\t{features[str(key)][:].seq}\n')
                     
 if __name__ == '__main__':
     main()
