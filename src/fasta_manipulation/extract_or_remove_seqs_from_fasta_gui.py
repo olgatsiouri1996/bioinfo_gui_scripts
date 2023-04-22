@@ -8,7 +8,7 @@ def main():
     ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="file with fasta headers to retrieve the output fasta sequences")
-    ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or 3-column txt file(id, description seq)")
+    ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or 3-column txt file with id, description, seq as headers")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files.")
     ap.add_argument("-pro", "--program",type=str, default='extract sequences from a multi-fasta file', required=False, choices=['extract sequences from a multi-fasta file','extract many single-fasta files','remove sequences from a multi-fasta file','remove sequences and export to many single-fasta files','extract sequences to a txt file','remove sequences and export the rest to a txt file'], widget='Dropdown', help="program to choose")
     args = vars(ap.parse_args())
