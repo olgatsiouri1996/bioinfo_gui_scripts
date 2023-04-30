@@ -3,7 +3,7 @@ from gooey import *
 import os
 from pyfaidx import Fasta
 # input parameters
-@Gooey(required_cols=2, program_name= 'extract or remove sequences from fasta',default_size=(870, 530), header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=2, program_name= 'extract or remove sequences from fasta',default_size=(870, 530), header_bg_color= '#F5F5F5', body_bg_color='#F5F5F5', terminal_font_color= '#F5F5F5', terminal_panel_color= '#F5F5F5')
 def main():
     ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
