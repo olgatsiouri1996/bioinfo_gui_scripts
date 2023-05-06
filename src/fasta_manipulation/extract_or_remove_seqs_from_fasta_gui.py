@@ -7,7 +7,7 @@ from pyfaidx import Fasta
 def main():
     ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
-    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="file with fasta headers to retrieve the output fasta sequences")
+    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences")
     ap.add_argument("-pro", "--program",type=str, default='extract sequences from a multi-fasta file', required=False, choices=['extract sequences from a multi-fasta file','extract many single-fasta files','remove sequences from a multi-fasta file','remove sequences and export to many single-fasta files','extract sequences to a 2-column txt file','remove sequences and export the rest to a 2-column txt file','extract sequences to a 3-column txt file','remove sequences and export the rest to a 3-colmn txt file'], widget='Dropdown', help="program to choose")
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or a 2-column or a 3-column txt file with id, seq or id, description, seq as headers respectively")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files.")
@@ -17,7 +17,7 @@ def main():
     def wrap_fasta_seq(seq):
         return '\n'.join([seq[i:i+60] for i in range(0, len(seq), 60)])
     # import the txt file with headers you want to extract the sequence from the input fasta
-    headers = (line.rstrip() for line in open(args['ids']))
+    headers = (str(line.rstrip()).split()[0] for line in open(args['ids']))
     # import fasta file
     features = Fasta(args['input'])
     # choose program
