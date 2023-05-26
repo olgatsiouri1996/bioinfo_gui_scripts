@@ -47,11 +47,11 @@ def main():
         # export to fasta
         if args['multifasta']=='no':
             sys.stdout = open(os.path.join(args['output'],''.join([basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end),".fasta"])), 'a')
-            print(''.join([">",basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end)]).replace('\r',''))
+            print(''.join([">",basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end)]).rstrip())
             print('\n'.join(split_every_60(prot)))
             sys.stdout.close()
         else:
-            print(''.join([">",basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end)]).replace('\r',''))
+            print(''.join([">",basename,"_",args['chain'],"_",str(args['start']),"_",str(seq_end)]).rstrip())
             print('\n'.join(split_every_60(prot)))            
     # select between importing 1 or many pdb files
     if args['type'] == 1:
