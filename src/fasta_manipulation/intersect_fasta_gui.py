@@ -25,7 +25,6 @@ def main():
     else:
         final = (set(features1.keys()).difference(features2.keys()))
     # choose export type
-    # choose program
     type = args['type']
     match type:
         case '1 multi-fasta file':
