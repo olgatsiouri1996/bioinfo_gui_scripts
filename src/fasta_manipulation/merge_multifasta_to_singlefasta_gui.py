@@ -1,31 +1,36 @@
 # python3
 from gooey import *
 from pyfaidx import Fasta
-import sys
+import textwrap
 # imput parameters
-@Gooey(required_cols=3, program_name='merge multifasta to singlefasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=3, program_name="merge multi-fasta to single-fasta",default_size=(800, 530), header_bg_color= "#DCDCDC", terminal_font_color= "#DCDCDC", terminal_panel_color= "#DCDCDC")
 def main():
     ap = GooeyParser()
-    ap.add_argument("-mfa", "--multifasta", required=True, widget='FileChooser', help="input multi-fasta file to merge its sequences")
-    ap.add_argument("-id", "--seqid", required=True, type=str, help="fasta header of the output file")
-    ap.add_argument("-sp", "--spacer", required=False, type=str, default="", help="nucleotides or aminoacids to add between the merged fasta sequences. Default: no sequence to add")
-    ap.add_argument("-sfa", "--singlefasta", required=True, widget='FileSaver', help="output single-fasta file")
+    ap.add_argument("-mfa", "--multi fasta", required=True, widget="FileChooser", help="input multi-fasta file to merge its sequences")
+    ap.add_argument("-type", "--sequence type", required=False, type=str, default="none",choices=["none","DNA", "aa"], help="sequence type of unknown DNA/AAs to add between the merged fasta sequences. Default: no sequence to add")
+    ap.add_argument("-num", "--sequence number", required=False, type=int, help="number of nucleotides or aminoacids to add between the merged fasta sequences. If sequence type is none then ignore this option")
+    ap.add_argument("-id", "--fasta header", required=True, type=str, help="fasta header of the output file")
+    ap.add_argument("-wi", "--fasta width", required=False, type=int, default=80, choices=[60,70,80,100,120], help="number of fasta sequence characters per line")
+    ap.add_argument("-sfa", "--single fasta", required=True, widget="FileSaver", help="output single-fasta file")
     args = vars(ap.parse_args())
     # main
-    # create function to split the input sequence based on a specific number of characters(60)
-    def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
     # index fasta file
-    features = Fasta(args['multifasta'],as_raw=True)
+    features = Fasta(args["multi fasta"],as_raw=True)
     # store all sequences to a list
     sequences = [features[key][:] for key in features.keys()]
-    # merge all sequences at 1 and create SeqRecord object
-    merged_seqs = args['spacer'].join(sequences)
+    # select sequence type
+    if args["sequence type"]=="none":
+        spacer = ""
+    elif args["sequence type"]=="DNA":
+        spacer = "N"*args["sequence number"]
+    else:
+        spacer = "X"*args["sequence number"]
+    # merge all sequences at 1 
+    merged_seqs = spacer.join(sequences)
     # export to fasta
-    sys.stdout = open(args['singlefasta'], 'a')
-    print(''.join([">",args['seqid']]).replace('\r',''))
-    print('\n'.join(split_every_60(merged_seqs)))
-    sys.stdout.close()
+    with open(args["single fasta"], "w") as f:
+        f.write(f'>{args["fasta header"]}\n{textwrap.fill(merged_seqs, width=args["fasta width"])}')
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
