@@ -12,13 +12,14 @@ def split_multi_fasta(input_file, number, output_directory):
     # Split list of keys (sequence identifiers)
     keyslist = list(features.keys())
     split_lists = [keyslist[x:x+number] for x in range(0, len(keyslist), number)]
-    # Extract many single-fasta files
+    # Extract many multi-fasta files
     for count, lis in enumerate(split_lists, 1):
         output_file = os.path.join(output_directory, f"{file_name}_part{count}.fasta")
         with open(output_file, 'w') as output:
             for key in lis:
-                output.write(f">{features[str(key)].long_name}\n")
-                seq = str(features[str(key)][:].seq)
+                header = str(features[str(key)].long_name).rstrip()
+                output.write(f">{header}\n")
+                seq = str(features[str(key)][:].seq).rstrip()
                 wrapped_seq = textwrap.fill(seq, width=60)
                 output.write(wrapped_seq + '\n')
 
