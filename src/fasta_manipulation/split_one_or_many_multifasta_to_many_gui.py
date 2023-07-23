@@ -1,57 +1,53 @@
-# python3
 import os
-import sys
+import glob
+import textwrap
 from gooey import *
 from pyfaidx import Fasta
-# input parameters
-@Gooey(required_cols=1, program_name='split one or many multi-fasta to many', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
-def main():
-    ap = GooeyParser()
-    ap.add_argument("-in", "--input", required=False, widget='FileChooser', help="input multi-fasta file")
-    ap.add_argument("-num", "--number", required=True, type=int, help="number of fasta records per output fasta file(you can put any number you want as it makes sure the the remainig fasta records will be written to a seperate file as well)")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="directory with multi-fasta files")
-    ap.add_argument("-pro", "--program", required=False, type=int, default=1,  help="program to choose: 1) split 1 multi-fasta file to many, 2) split many multi-fasta files to many")
-    args = vars(ap.parse_args())
-    # main
-    # create function to split the input sequence based on a specific number of characters(60)
-    def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
-    # choose program
-    if args['program'] == 1:
-        # import fasta file
-        features = Fasta(args['input'])
-        # initial count of files
-        count = 0
-        # split list
-        keyslist = list(features.keys())
-        split_lists = [keyslist[x:x+args['number']] for x in range(0, len(keyslist), args['number'])]
-        # extract many sigle-fasta files
-        for lis in split_lists:
-            count = count + 1
-            sys.stdout = open(''.join([str(args['input']).split('.fa')[0],"_","part",str(count),".fasta"]), 'a')
+# Function to split the multi-FASTA file into smaller parts
+def split_multi_fasta(input_file, number, output_directory):
+    # Import fasta file
+    features = Fasta(input_file)
+    # Get the filename without extension
+    file_name = os.path.splitext(os.path.basename(input_file))[0]
+    # Split list of keys (sequence identifiers)
+    keyslist = list(features.keys())
+    split_lists = [keyslist[x:x+number] for x in range(0, len(keyslist), number)]
+    # Extract many single-fasta files
+    for count, lis in enumerate(split_lists, 1):
+        output_file = os.path.join(output_directory, f"{file_name}_part{count}.fasta")
+        with open(output_file, 'w') as output:
             for key in lis:
-                print(''.join([">",features[str(key)].long_name]).replace('\r',''))
-                print('\n'.join(split_every_60(features[str(key)][:].seq)))
-            sys.stdout.close()
+                output.write(f">{features[str(key)].long_name}\n")
+                seq = str(features[str(key)][:].seq)
+                wrapped_seq = textwrap.fill(seq, width=60)
+                output.write(wrapped_seq + '\n')
+
+# Function to split multiple multi-FASTA files in a directory into smaller parts
+def split_multi_fasta_files_in_directory(directory, number, output_directory):
+    fasta_files = glob.glob(os.path.join(directory, "*.fa")) + glob.glob(os.path.join(directory, "*.fasta")) + glob.glob(os.path.join(directory, "*.fna")) + glob.glob(os.path.join(directory, "*.ffn")) + glob.glob(os.path.join(directory, "*.faa")) + glob.glob(os.path.join(directory, "*.frn"))
+    for fasta_file in fasta_files:
+        split_multi_fasta(fasta_file, number, output_directory)
+
+# Command-line interface using Gooey
+@Gooey(program_name='Split Multi-FASTA', header_bg_color='#DCDCDC', terminal_font_color='#DCDCDC', terminal_panel_color='#DCDCDC',default_size=(610,610))
+def main():
+    ap = GooeyParser(description="Split one or many multi-FASTA to many")
+    ap.add_argument("program", choices=["1", "2"], default="1", help="Program to choose: 1) split 1 multi-fasta file to many, 2) split many multi-fasta files to many")
+    ap.add_argument("number", type=int, help="Number of fasta records per output fasta file (you can put any number you want as it makes sure the remaining fasta records will be written to a separate file as well)")
+    ap.add_argument("output_directory", type=str, widget='DirChooser', help="Output directory to save the split fasta files")
+
+    # Arguments for Program 1
+    ap.add_argument("-in", "--input", required='program' in ["1"], widget='FileChooser', help="Input multi-fasta file")
+
+    # Arguments for Program 2
+    ap.add_argument("-dir", "--directory", required='program' in ["2"], type=str, widget='DirChooser', help="Directory to search for multi-fasta files with extensions: .fasta, .fna, .ffn, .faa, .frn, .fa files")
+
+    args = vars(ap.parse_args())
+
+    if args['program'] == "1":
+        split_multi_fasta(args['input'], args['number'], args['output_directory'])
     else:
-        # import multi-fasta from current directory
-        for filename in sorted(os.listdir(os.chdir(args['directory']))):
-            if filename.endswith(".fa") or filename.endswith(".fasta"):
-                # import fasta file
-                features = Fasta(filename)
-                # initial count of files
-                count = 0
-                # split list
-                keyslist = list(features.keys())
-                split_lists = [keyslist[x:x+args['number']] for x in range(0, len(keyslist), args['number'])]
-                # extract many sigle-fasta files
-                for lis in split_lists:
-                    count = count + 1
-                    sys.stdout = open(''.join([str(filename).split('.fa')[0],"_","part",str(count),".fasta"]), 'a')
-                    for key in lis:
-                        print(''.join([">",features[str(key)].long_name]).replace('\r',''))
-                        print('\n'.join(split_every_60(features[str(key)][:].seq)))
-                    sys.stdout.close()
-                del features; keyslist.clear(); split_lists.clear()
+        split_multi_fasta_files_in_directory(args['directory'], args['number'], args['output_directory'])
 
 if __name__ == '__main__':
     main()
