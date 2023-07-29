@@ -10,7 +10,7 @@ def main():
     ap = GooeyParser(description="creates a line plot or histogram with B factor values from a selected chain")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input pdb file")
     ap.add_argument("-chain", "--chain", required=False,default='A', help="chain from pdb file to select")
-    ap.add_argument("-col", "--col", required=True, help="colour of line/histogram in plot (you can use hex colour codes)")
+    ap.add_argument("-col", "--col", required=True, widget='ColourChooser', help="colour of line/histogram in plot (you can use hex colour codes, or choose a color from the color panel)")
     ap.add_argument("-plot", "--plot", required=True, widget='FileSaver', help="export plot to file")
     ap.add_argument("-dpi", "--dpi", default=300, required=False, help="dpi of exported plot")
     ap.add_argument("-type", "--type", required=False, choices=['pdf', 'svg'], default='pdf', help="type of plot file")

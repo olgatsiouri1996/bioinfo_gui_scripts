@@ -1,10 +1,10 @@
 # python3
 import os
-import sys
 from gooey import *
 from biopandas.pdb import PandasPdb
+import textwrap
 # input parameters
-@Gooey(required_cols=2, program_name='subset many pdb to single or multi fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=2, program_name='subset many pdb to single or multi fasta', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC',default_size=(610,530))
 def main():
     ap = GooeyParser(description="converts each pdb files into single fasta files or makes a multi-fasta file based on the chain, start and end locations")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input 4-column txt file with pdb filename(no extension),chain,start and end coordinates")
@@ -14,8 +14,6 @@ def main():
     ap.add_argument("-type", "--type", required=False,default=1, type=int, widget='Dropdown', choices=[1,2],  help="type of output to choose: 1) 1 multi-fasta file, 2) many single-fasta files.")
     args = vars(ap.parse_args())
     # main
-    # create function to split the input sequence based on a specific number of characters(60)
-    def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
     # convert a 4-column txt file to 4 generators 1 per column
     pdbname = (str(line.rstrip()).split()[0] for line in open(args['input']))
     chain = (str(line.rstrip()).split()[1] for line in open(args['input']))
@@ -37,19 +35,16 @@ def main():
         return prot
     # select between exporting 1 or many fasta files
     if args['type'] == 1:
-        sys.stdout = open(args['multifasta'],'a')
-        for (a,b,c,d) in zip(pdbname,chain,start,end):
-            print(''.join([">",a,"_",b,"_",str(c),"_",str(d)]).replace('\r',''))
-            print('\n'.join(split_every_60(trim_to_fasta(a,b,c,d))))
-        sys.stdout.close()
+        with open(args['multifasta'], 'w') as f:
+            for (a,b,c,d) in zip(pdbname,chain,start,end):
+                wrapped_sequence = textwrap.fill(trim_to_fasta(a,b,c,d), width=60)
+                f.write(f">{a}_{b}_{str(c)}_{str(d)}\n{wrapped_sequence}\n")
     else:
         os.chdir(args['output'])
         for (a,b,c,d) in zip(pdbname,chain,start,end):
-            sys.stdout = open(''.join([a,"_",b,"_",str(c),"_",str(d),".fasta"]), 'a')
-            print(''.join([">",a,"_",b,"_",str(c),"_",str(d)]).replace('\r',''))
-            print('\n'.join(split_every_60(trim_to_fasta(a,b,c,d))))
-            sys.stdout.close()            
-
+            wrapped_sequence = textwrap.fill(trim_to_fasta(a,b,c,d), width=60)
+            with open(''.join([a,"_",b,"_",str(c),"_",str(d),".fasta"]), 'w') as f:
+                f.write(f">{a}_{b}_{str(c)}_{str(d)}\n{wrapped_sequence}\n")
          
 if __name__ == '__main__':
     main()
