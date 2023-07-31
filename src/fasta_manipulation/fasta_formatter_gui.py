@@ -1,55 +1,61 @@
-# python3
 import os
+import glob
 from gooey import *
 from Bio import SeqIO
 import pandas as pd
-import sys
+import textwrap
+
 # input parameters
-@Gooey(required_cols=0, program_name= 'fasta formatter', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=0, program_name='fasta formatter', header_bg_color='#DCDCDC', terminal_font_color='#DCDCDC', terminal_panel_color='#DCDCDC',default_size=(610,645))
 def main():
     ap = GooeyParser(description="changes the width of sequences line in 1 or many FASTA files")
+    ap.add_argument("program", type=str, default="one input/output fasta file", choices=["one input/output fasta file","many input/output fasta files",".txt file with fasta file names and width for each file"], help="program to choose")
     ap.add_argument("-in", "--input", required=False, widget="FileChooser", help="input fasta file")
-    ap.add_argument("-txt", "--txt", required=False, widget="FileChooser", help="input txt file with 2 columns 1) file name (without extension), 2) width")
+    ap.add_argument("-txt", "--txt", required=False, widget="FileChooser", help="input txt file with 2 columns: filename without extension and width")
     ap.add_argument("-out", "--output", required=False, widget="FileSaver", help="output fasta file")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser', help="directory to search for fasta files")
-    ap.add_argument("-width", "--width", required=False, type=int, default=80, help="number of characters per line. Default 80")
-    ap.add_argument("-pro", "--program", required=False, type=int, default=1, help="program to choose. 1) one input/output fasta file, 2) many input/output fasta files, 3) .txt file with fasta file names and width for each file. Default is 1")
+    ap.add_argument("-indir", "--input directory", required=False, type=str, widget='DirChooser', help="directory to search for fasta files")
+    ap.add_argument("-outdir", "--output directory", required=False, type=str, widget='DirChooser', help="directory to save fasta files")
+    ap.add_argument("-width", "--width", required=False, type=int, default=80, choices=[60,70,80,100,120], help="number of characters per line")
     args = vars(ap.parse_args())
-    # main
-    # create function to split the input sequence based on a specific number of characters
-    def split_every_width(s,w): return [s[i:i+w] for i in range(0,len(s),w)]
+    # create function to retrieve fasta description
+    def retrieve_description(desc):
+        try:
+            description = str(desc).split(" ",1)[1]
+        except:
+            description = ""
+        return description
     # choose program
-    if args['program'] == 1:
+    if args['program'] == "one input/output fasta file":
         # export to a new fasta file
-        sys.stdout = open(args['output'], 'a')
-        for record in SeqIO.parse(args['input'],'fasta'):
-                print("".join([">",record.id,"\t",record.description]))
-                print('\n'.join(split_every_width(str(record.seq), args['width']))) # add characters in new line after the number of characters surpasses the input width 
-        sys.stdout.close()
-    elif args['program'] == 2:
+        with open(args['output'], 'w') as output_file:
+            for record in SeqIO.parse(args['input'], 'fasta'):
+                formatted_sequence = textwrap.fill(str(record.seq), width=args['width'])
+                output_file.write(f">{record.id} {retrieve_description(record.description)}\n")
+                output_file.write(formatted_sequence + "\n")
+                
+    elif args['program'] == "many input/output fasta files":
         # import each fasta file from the working directory
-        for filename in sorted(os.listdir(os.chdir(args['directory']))):
-            if filename.endswith(".fa") or filename.endswith(".fasta"):
-                # export to new fasta files with the user imported width value
-                sys.stdout = open(''.join([filename.split(".")[0],"_","w",str(args['width']),".fasta"]), 'a')
-                for record in SeqIO.parse(filename,'fasta'):
-                        print("".join([">",record.id,"\t",record.description]))
-                        print('\n'.join(split_every_width(str(record.seq), args['width']))) # add characters in new line after the number of characters surpasses the input width 
-                sys.stdout.close()
+        for filename in glob.glob(os.path.join(args['directory'], "*.fasta")):
+            output_filename = f"{os.path.splitext(os.path.basename(filename))[0]}_w{args['width']}.fasta"
+            with open(os.path.join(args['output directory'],output_filename), 'w') as output_file:
+                for record in SeqIO.parse(filename, 'fasta'):
+                    formatted_sequence = textwrap.fill(str(record.seq), width=args['width'])
+                    output_file.write(f">{record.id} {retrieve_description(record.description)}\n")
+                    output_file.write(formatted_sequence + "\n")
+    
     else:
         df = pd.read_csv(args['txt'], header=None, sep="\t")
-        # select ids and widths columns, convert to lists
-        headers = df.iloc[:,0].values.tolist()
-        widths = df.iloc[:,1].values.tolist()
-        # iter elements on pairs to export to fasta
-        for (a,b) in zip(headers, widths):
-            # export to new fasta files with the user imported width value
-            sys.stdout = open(''.join([str(a),"_","w",str(b),".fasta"]), 'a')
-            for record in SeqIO.parse(''.join([str(a),".fasta"]),'fasta'):
-                print("".join([">",record.id,"\t",record.description]))
-                print('\n'.join(split_every_width(str(record.seq), int(b)))) # add characters in new line after the number of characters surpasses the input width 
-            sys.stdout.close()
+        headers = df.iloc[:, 0].values.tolist()
+        widths = df.iloc[:, 1].values.tolist()
+        for (a, b) in zip(headers, widths):
+            input_filename = f"{a}.fasta"
+            output_filename = f"{a}_w{b}.fasta"
+            with open(os.path.join(args['output directory'],output_filename), 'w') as output_file:
+                for record in SeqIO.parse(input_filename, 'fasta'):
+                    formatted_sequence = textwrap.fill(str(record.seq), width=int(b))
+                    output_file.write(f">{record.id} {retrieve_description(record.description)}\n")
+                    output_file.write(formatted_sequence + "\n")
 
-  
+
 if __name__ == '__main__':
     main()
