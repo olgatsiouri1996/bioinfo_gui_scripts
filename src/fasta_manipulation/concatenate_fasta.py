@@ -11,7 +11,7 @@ def main():
     parser.add_argument("input directory", widget="DirChooser", help="Choose the directory containing the files you want to concatenate")
     parser.add_argument("output file", widget="FileSaver", help="Choose the output file path")
     parser.add_argument("pattern type", default="search for all fasta extensions", choices=["search for all fasta extensions","prefix","intermediate","suffix","complex"], help="Import pattern type of the inport files you want to concatenate")
-    parser.add_argument("-pat","--pattern", required=False, help="Import pattern of the inport files you want to concatenate. it can be a simple set of characters like: file(as prefix), prot.fa(as suffix), 001(as an intermediate pattern within the filename), or FUN*101*v3.0*.faa(as a complex pattern)")
+    parser.add_argument("-pat","--pattern", required=False, help="Import pattern of the inport files you want to concatenate. it can be a simple set of characters like: gene(as prefix), prot.fa(as suffix), 001(as an intermediate pattern within the filename), or FUN*101*v3.0*.faa(as a complex pattern)")
     # Parse the arguments
     args = vars(parser.parse_args())
     # Find all the FASTA files in the specified directory
