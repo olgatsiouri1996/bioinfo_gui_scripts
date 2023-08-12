@@ -6,7 +6,7 @@ import textwrap
 # input parameters
 @Gooey(required_cols=2, program_name= 'extract or remove sequences from fasta',default_size=(1030, 530), header_bg_color= '#F5F5F5', body_bg_color='#F5F5F5', terminal_font_color= '#F5F5F5', terminal_panel_color= '#F5F5F5')
 def main():
-    ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
+    ap = GooeyParser(description="use a txt file with fasta identifiers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences")
     ap.add_argument("-act", "--action",type=str, default='extract', required=False, choices=['extract','remove'], widget='Dropdown', help="choose to extract or remove sequences")
