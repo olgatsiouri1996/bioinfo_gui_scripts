@@ -9,7 +9,8 @@ def main():
     ap = GooeyParser(description="use a txt file with fasta headers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences")
-    ap.add_argument("-pro", "--program",type=str, default='extract sequences from a multi-fasta file', required=False, choices=['extract sequences from a multi-fasta file','extract many single-fasta files','remove sequences from a multi-fasta file','remove sequences and export to many single-fasta files','extract sequences to a 2-column txt file(id,seq)','remove sequences and export the rest to a 2-column txt file(id,seq)','extract sequences to a 3-column txt file(id,description,seq)','remove sequences and export the rest to a 3-column txt file(id,description,seq)','extract sequences to a 3-column txt file(id,full_fasta_header,seq)','remove sequences and export the rest to a 3-column txt file(id,full_fasta_header,seq)','remove sequences and export the remaining ids to txt'], widget='Dropdown', help="program to choose")
+    ap.add_argument("-act", "--action",type=str, default='extract', required=False, choices=['extract','remove'], widget='Dropdown', help="choose to extract or remove sequences")
+    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','remove sequences and export the remaining ids to txt'], widget='Dropdown', help="output type")
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or a 1-column or a 2-column or a 3-column txt file")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files")
     args = vars(ap.parse_args())
@@ -18,67 +19,36 @@ def main():
     headers = (str(line.rstrip()).split()[0] for line in open(args['ids']))
     # import fasta file
     features = Fasta(args['input'])
+    # choose to remove sequences
+    if 'remove' in args['action']:
+        # collect ids of import fasta file
+        keyslist = (features.keys())
+        # remove those that exist in the headers generator
+        final_keys = (set(keyslist).difference(headers))
+    else:
+        final_keys = headers
     # choose program
-    program = args['program']
+    program = args['type']
     match program:
-        # extract a multi-fasta file
-        case 'extract sequences from a multi-fasta file':           
-            # iterate input headers to extract sequences and export as multi-fasta
-            with  open(args['output'], 'w') as f:
-                for header in headers:
-                    f.write(f'>{str(features[str(header)].long_name).rstrip()}\n{textwrap.fill(features[str(header)][:].seq, width=60)}\n')
-        case 'extract many single-fasta files':
-            # extract many single fasta files
-            os.chdir(args['directory'])
-            for header in headers:
-                with open(str(header)+".fasta", 'w') as f:
-                    f.write(f'>{str(features[str(header)].long_name).rstrip()}\n{textwrap.fill(features[str(header)][:].seq, width=60)}\n')
-        case 'remove sequences from a multi-fasta file':
-            # remove ids
-            keyslist = (features.keys())
-            final_keys = (set(keyslist).difference(headers))
+        case '1 multi-fasta file':
             # export to 1 multi-fasta
             with  open(args['output'], 'w') as f:
                 for key in final_keys:
                     f.write(f'>{str(features[str(key)].long_name).rstrip()}\n{textwrap.fill(features[str(key)][:].seq, width=60)}\n')                
-        case 'remove sequences and export to many single-fasta files':
-            # remove ids
-            keyslist = (features.keys())
-            final_keys = (set(keyslist).difference(headers))
+        case 'many single-fasta files':
             # extract many sigle-fasta files
             os.chdir(args['directory'])
             for key in final_keys:
                 with open(str(key)+".fasta", 'w') as f:
                     f.write(f'>{str(features[str(key)].long_name).rstrip()}\n{textwrap.fill(features[str(key)][:].seq, width=60)}\n')
                 # extract a multi-fasta file
-        case 'extract sequences to a 2-column txt file(id,seq)':           
-            # iterate input headers to extract sequences and export as 2 column txt
-            with  open(args['output'], 'w') as f:
-                f.write(f'{"id"}\t{"seq"}\n')
-                for header in headers:
-                    f.write(f'{str(header)}\t{features[str(header)][:].seq}\n')
-        case 'remove sequences and export the rest to a 2-column txt file(id,seq)':
-            # remove ids           
-            keyslist = (features.keys())
-            final_keys = (set(keyslist).difference(headers))            
+        case '2-column txt file(id,seq)':                        
             # iterate input headers to extract sequences and export as 2 column txt
             with  open(args['output'], 'w') as f:
                 f.write(f'{"id"}\t{"seq"}\n')
                 for key in final_keys:
                     f.write(f'{str(key)}\t{features[str(key)][:].seq}\n')
-        case 'extract sequences to a 3-column txt file(id,description,seq)':           
-            # iterate input headers to extract sequences and export as 3 column txt
-            with  open(args['output'], 'w') as f:
-                f.write(f'{"id"}\t{"description"}\t{"seq"}\n')
-                for header in headers:
-                    try:
-                        f.write(f'{str(header)}\t{str(str(features[str(header)].long_name).rstrip()).split(" ",1)[1]}\t{features[str(header)][:].seq}\n')
-                    except IndexError:
-                        f.write(f'{str(header)}\t{""}\t{features[str(header)][:].seq}\n')
-        case 'remove sequences and export the rest to a 3-column txt file(id,description,seq)':
-            # remove ids           
-            keyslist = (features.keys())
-            final_keys = (set(keyslist).difference(headers))            
+        case '3-column txt file(id,description,seq)':
             # iterate input headers to extract sequences and export as 3 column txt
             with  open(args['output'], 'w') as f:
                 f.write(f'{"id"}\t{"description"}\t{"seq"}\n')
@@ -87,25 +57,22 @@ def main():
                         f.write(f'{str(key)}\t{str(str(features[str(key)].long_name).rstrip()).split(" ",1)[1]}\t{features[str(key)][:].seq}\n')
                     except IndexError:
                         f.write(f'{str(key)}\t{""}\t{features[str(key)][:].seq}\n')
-        case 'extract sequences to a 3-column txt file(id,full_fasta_header,seq)':           
-            # iterate input headers to extract sequences and export as 3 column txt
-            with  open(args['output'], 'w') as f:
-                f.write(f'{"id"}\t{"full_fasta_header"}\t{"seq"}\n')
-                for header in headers:
-                    f.write(f'{str(header)}\t{str(features[str(header)].long_name).rstrip()}\t{features[str(header)][:].seq}\n')
-        case 'remove sequences and export the rest to a 3-column txt file(id,full_fasta_header,seq)':
-            # remove ids           
-            keyslist = (features.keys())
-            final_keys = (set(keyslist).difference(headers))            
+        case '3-column txt file(id,full_fasta_header,seq)':           
             # iterate input headers to extract sequences and export as 3 column txt
             with  open(args['output'], 'w') as f:
                 f.write(f'{"id"}\t{"full_fasta_header"}\t{"seq"}\n')
                 for key in final_keys:
                     f.write(f'{str(key)}\t{str(features[str(key)].long_name).rstrip()}\t{features[str(key)][:].seq}\n')
+        case '2-column txt file(id,description)':
+            # iterate input headers to extract sequences and export as 2 column txt
+            with  open(args['output'], 'w') as f:
+                f.write(f'{"id"}\t{"description"}\n')
+                for key in final_keys:
+                    try:
+                        f.write(f'{str(key)}\t{str(str(features[str(key)].long_name).rstrip()).split(" ",1)[1]}\n')
+                    except IndexError:
+                        f.write(f'{str(key)}\t{""}\n')
         case 'remove sequences and export the remaining ids to txt':
-            # remove ids           
-            keyslist = (features.keys())
-            final_keys = (set(keyslist).difference(headers))            
             # iterate input headers to extract sequences and export as 1-column txt
             with  open(args['output'], 'w') as f:
                 for key in final_keys:
