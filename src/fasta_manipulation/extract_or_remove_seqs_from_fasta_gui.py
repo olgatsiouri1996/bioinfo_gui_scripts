@@ -10,7 +10,7 @@ def main():
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences")
     ap.add_argument("-act", "--action",type=str, default='extract', required=False, choices=['extract','remove'], widget='Dropdown', help="choose to extract or remove sequences")
-    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','remove sequences and export the remaining ids to txt'], widget='Dropdown', help="output type")
+    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','1-column txt file(id)'], widget='Dropdown', help="output type")
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or a 1-column or a 2-column or a 3-column txt file")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files")
     args = vars(ap.parse_args())
@@ -72,9 +72,10 @@ def main():
                         f.write(f'{str(key)}\t{str(str(features[str(key)].long_name).rstrip()).split(" ",1)[1]}\n')
                     except IndexError:
                         f.write(f'{str(key)}\t{""}\n')
-        case 'remove sequences and export the remaining ids to txt':
+        case '1-column txt file(id)':
             # iterate input headers to extract sequences and export as 1-column txt
             with  open(args['output'], 'w') as f:
+                f.write(f'{"id"}\n')
                 for key in final_keys:
                     f.write(f'{str(key)}\n')
                                         
