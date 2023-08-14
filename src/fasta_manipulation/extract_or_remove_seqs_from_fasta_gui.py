@@ -8,11 +8,11 @@ import textwrap
 def main():
     ap = GooeyParser(description="use a txt file with fasta identifiers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
-    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences")
+    ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences. The 2nd column can contain the groupname the identifier belongs, to split into many multi-fasta files 1 per group name")
     ap.add_argument("-act", "--action",type=str, default='extract', required=False, choices=['extract','remove'], widget='Dropdown', help="choose to extract or remove sequences")
-    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','1-column txt file(id)'], widget='Dropdown', help="output type")
+    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','many multi-fasta files 1 per group','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','1-column txt file(id)'], widget='Dropdown', help="output type")
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or a 1-column or a 2-column or a 3-column txt file")
-    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save the single-fasta files")
+    ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save many single- or multi-fasta files")
     args = vars(ap.parse_args())
     # main
     # import the txt file with headers you want to extract the sequence from the input fasta
@@ -41,7 +41,27 @@ def main():
             for key in final_keys:
                 with open(str(key)+".fasta", 'w') as f:
                     f.write(f'>{str(features[str(key)].long_name).rstrip()}\n{textwrap.fill(features[str(key)][:].seq, width=60)}\n')
-                # extract a multi-fasta file
+        case 'many multi-fasta files 1 per group':
+            # create a dictionary with identifier and group
+            identifier_to_group = {}
+            groups = (str(line.rstrip()).split()[1] for line in open(args['ids']))
+            for (identifier, group) in zip(headers, groups):
+                identifier_to_group[identifier] = group
+            # populate group_to_sequences dictionary
+            group_to_sequences = {}
+            for identifier, group in identifier_to_group.items():
+                if group not in group_to_sequences:
+                    group_to_sequences[group] = []
+                sequence = textwrap.fill(features[str(identifier)][:].seq, width=60)
+                description = features[str(identifier)].long_name
+                group_to_sequences[group].append((description, sequence))
+            # write sequences to group-specific output files
+            os.chdir(args['directory'])
+            for group, sequences in group_to_sequences.items():
+                output_file_name = f"{group}.fasta"
+                with open(output_file_name, "w") as output_file:
+                    for description, sequence in sequences:
+                        output_file.write(f">{description}\n{sequence}\n")
         case '2-column txt file(id,seq)':                        
             # iterate input headers to extract sequences and export as 2 column txt
             with  open(args['output'], 'w') as f:
