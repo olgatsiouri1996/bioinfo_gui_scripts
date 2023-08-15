@@ -4,15 +4,17 @@ import os
 from pyfaidx import Fasta
 import textwrap
 # input parameters
-@Gooey(required_cols=2, program_name= 'extract or remove sequences from fasta',default_size=(1030, 530), header_bg_color= '#F5F5F5', body_bg_color='#F5F5F5', terminal_font_color= '#F5F5F5', terminal_panel_color= '#F5F5F5')
+@Gooey(required_cols=2, program_name= 'extract or remove sequences from fasta',default_size=(1030, 610), header_bg_color= '#F5F5F5', body_bg_color='#F5F5F5', terminal_font_color= '#F5F5F5', terminal_panel_color= '#F5F5F5')
 def main():
     ap = GooeyParser(description="use a txt file with fasta identifiers to extract or remove sequences from fasta file")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
     ap.add_argument("-ids", "--ids", required=True, widget='FileChooser', help="1 or multiple column tab seperated file with no column names, with fasta identifiers in the 1st column to retrieve the output fasta sequences. The 2nd column can contain the groupname the identifier belongs, to split into many multi-fasta files 1 per group name")
     ap.add_argument("-act", "--action",type=str, default='extract', required=False, choices=['extract','remove'], widget='Dropdown', help="choose to extract or remove sequences")
-    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','many multi-fasta files 1 per group','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','1-column txt file(id)'], widget='Dropdown', help="output type")
+    ap.add_argument("-ty", "--type",type=str, default='1 multi-fasta file', required=False, choices=['1 multi-fasta file','many single-fasta files','many multi-fasta files 1 per group','many multi-fasta files by number of records','2-column txt file(id,seq)','3-column txt file(id,description,seq)','3-column txt file(id,full_fasta_header,seq)','2-column txt file(id,description)','1-column txt file(id)'], widget='Dropdown', help="output type")
     ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output multi-fasta or a 1-column or a 2-column or a 3-column txt file")
     ap.add_argument("-dir", "--directory", required=False, type=str, widget='DirChooser',  help="output directory to save many single- or multi-fasta files")
+    ap.add_argument("-prefix", "--prefix",type=str,  required=False, help="output file prefix when choosing the program type: many multi-fasta files by number of records")
+    ap.add_argument("-num", "--number",type=int, required=False, help="number of fasta records to output per file when choosing the program type: many multi-fasta files by number of records")
     args = vars(ap.parse_args())
     # main
     # import the txt file with headers you want to extract the sequence from the input fasta
@@ -62,6 +64,18 @@ def main():
                 with open(output_file_name, "w") as output_file:
                     for description, sequence in sequences:
                         output_file.write(f">{description}\n{sequence}\n")
+        case 'many multi-fasta files by number of records':   
+            split_lists = [list(final_keys)[x:x+args['number']] for x in range(0, len(list(final_keys)), args['number'])]
+            # Extract many multi-fasta files
+            for count, lis in enumerate(split_lists, 1):
+                output_file = os.path.join(args['directory'], f"{args['prefix']}_part{count}.fasta")
+                with open(output_file, 'w') as output:
+                    for key in lis:
+                        header = str(features[str(key)].long_name).rstrip()
+                        output.write(f">{header}\n")
+                        seq = str(features[str(key)][:].seq).rstrip()
+                        wrapped_seq = textwrap.fill(seq, width=60)
+                        output.write(wrapped_seq + '\n')
         case '2-column txt file(id,seq)':                        
             # iterate input headers to extract sequences and export as 2 column txt
             with  open(args['output'], 'w') as f:
