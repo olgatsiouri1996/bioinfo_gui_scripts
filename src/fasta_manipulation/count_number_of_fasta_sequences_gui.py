@@ -4,16 +4,17 @@ import glob
 from gooey import *
 from pyfaidx import Fasta
 # input parameters
-@Gooey(required_cols=2, program_name='count number of fasta sequences', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=1, program_name='count number of fasta sequences', header_bg_color= '#DCDCDC', terminal_panel_color= '#DCDCDC',terminal_font_color= '#000000',terminal_font_size=12, clear_before_run=True)
 def main():
     ap = GooeyParser(description="count number of fasta sequences for each fasta file by indexing the  multi-fasta files in a user specified directory")
     ap.add_argument("-dir", "--directory", required=True, widget='DirChooser', help="directory of input mult-fasta files with extensions: .fasta, .fa, .fna, .faa, .fsa, .ffn, frn, .mpfa")
-    ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output tab seperated 2-column txt file with fasta filenames and number of fasta sequences")
-    ap.add_argument("-act", "--action", required=False, type=str, default="extract", choices=["extract", "remove"],  help="extract or remove files that have a specific pattern")
+    ap.add_argument("-out", "--output", required=False, widget='FileSaver', help="output tab seperated 2-column txt file with fasta filenames and number of fasta sequences")
+    ap.add_argument("-act", "--action", required=False, type=str, default="extract", choices=["extract", "remove"],  help="extract or remove files that have a specific pattern. This does not apply to the \"all fasta extensions\" pattern type. In this case, all files with all fasta extension types are extracted")
     ap.add_argument("-ext", "--extension", required=False, type=str, default="no", choices=["no", "yes"],  help="should output filenames have extensions")
     ap.add_argument("-type", "--type", required=False, type=str, default="all fasta extensions", choices=["all fasta extensions", "a specific pattern","many patterns"],  help="input pattern type to extract or remove files that have it")
-    ap.add_argument("-pat", "--pattern", required=False, type=str,  help="input pattern of files to count the sequences for")
+    ap.add_argument("-pat", "--pattern", required=False, type=str,  help="input pattern of files to count the sequences for.It can be a simple set of characters like: gene*(as prefix), *prot.fa(as suffix), *001*(as an intermediate pattern within the filename), or FUN*101*v3.0*.faa(as a complex pattern)")
     ap.add_argument("-pats", "--patterns", required=False, widget='FileChooser',  help="1-column txt file with patterns")
+    ap.add_argument("-exp", "--export", required=False, type=str, default="to app's console", choices=["to app's console", "to txt"],  help="choose how to export")
     args = vars(ap.parse_args())
     # choose programs
     if args['type']=="all fasta extensions":
@@ -36,28 +37,35 @@ def main():
             files_to_exclude = set()
             for file_pattern in file_patters:
                 files_to_exclude.update(glob.glob(os.path.join(args['directory'], file_pattern)))
-            filepaths = all_files.difference(files_to_exclude)                
+            filepaths = all_files.difference(files_to_exclude)
+    # Choose export type
+    if args['export']=="to app's console": 
+        sep = ": "
+    else:
+        sep = "\t"            
     # Choose whether the output filenames will contain extensions
     if args['extension']=='no':
         def count_seqs(filepath):
             filename = os.path.splitext(os.path.basename(filepath))[0]
             fasta_file = Fasta(filepath)
-            return f"{filename}\t{str(len(fasta_file.keys()))}"
+            return f"{filename}{sep}{str(len(fasta_file.keys()))}"
     else:
         def count_seqs(filepath):
             filename = os.path.basename(filepath)
             fasta_file = Fasta(filepath)
-            return f"{filename}\t{str(len(fasta_file.keys()))}"        
+            return f"{filename}{sep}{str(len(fasta_file.keys()))}"        
 
     counted_data = map(count_seqs,filepaths)
-
-    with open(args['output'],'w') as output_txt:
-        output_txt.write(f'{"filename"}\t{"number_of_sequences"}\n')
-        output_txt.write("\n".join(counted_data))
-
     # Remove .fai files in the input directory
     for fai_file in glob.glob(os.path.join(args['directory'], "*.fai")):
         os.remove(fai_file)
+    # Choose export type
+    if args['export']=="to app's console":
+        print("\n".join(counted_data))
+    else:
+        with open(args['output'],'w') as output_txt:
+            output_txt.write(f'{"filename"}\t{"number_of_sequences"}\n')
+            output_txt.write("\n".join(counted_data))
 
 if __name__ == '__main__':
     main()
