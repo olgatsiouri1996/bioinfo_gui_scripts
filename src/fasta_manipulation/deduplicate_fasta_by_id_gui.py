@@ -3,7 +3,7 @@ from gooey import *
 from pyfaidx import Fasta
 import textwrap
 # input parameters
-@Gooey(required_cols=2, program_name='deduplicate fasta',default_size=(610,440), header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+@Gooey(required_cols=2, program_name='deduplicate fasta by id',default_size=(610,440), header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
 def main():
     ap = GooeyParser(description="keep only the 1st of the duplicated sequences(that have the same identifier and sequence)")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input multi-fasta file")
