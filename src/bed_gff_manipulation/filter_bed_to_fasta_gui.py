@@ -19,7 +19,7 @@ def main():
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output file (choose .fasta or .txt)")
     ap.add_argument("-fea", "--feature", required=False, default='gene', choices=['gene','CDS','exon','intron','promoter'], type=str, help="specify the feature to collect sequences for")
-    ap.add_argument("-strandless", "--strandless", required=False, default='no', choices=['yes', 'no'], type=str, help="reverse complement sequences on '-' strand")
+    ap.add_argument("-strandedness", "--strandedness", required=False, default='no', choices=['yes', 'no'], type=str, help="reverse complement sequences on '-' strand")
     ap.add_argument("-program", "--program", required=False, default='filter', choices=['filter', 'no_filter'], type=str, help="program to choose")
     args = vars(ap.parse_args())
 
@@ -27,7 +27,7 @@ def main():
     warnings.filterwarnings('ignore')
 
     # Define the process_row function
-    def process_row(row, fasta, output_format, strandless):
+    def process_row(row, fasta, output_format, strandedness):
         chrom, start, end, ids, strand, feature = row
 
         if args['program'] == 'filter' and feature != args['feature']:
@@ -37,7 +37,7 @@ def main():
         if str(strand) == "+":
             seq = fasta[str(chrom)][int(start):end].seq
         else:
-            if strandless == 'yes':
+            if strandedness == 'yes':
                 seq = fasta[str(chrom)][int(start):end].reverse.complement.seq
             else:
                 seq = fasta[str(chrom)][int(start):end].seq
@@ -61,14 +61,14 @@ def main():
     with open(args['output'], 'w') as output_file:
         if output_format == 'fasta':
             for _, row in df.iterrows():
-                result = process_row(row, fasta, output_format, args['strandless'])
+                result = process_row(row, fasta, output_format, args['strandedness'])
                 if result is not None:
                     output_file.write(result)
         elif output_format == 'txt':
             header = "id\tchrom\tstart\tend\tstrand\tsequence"
             output_file.write(header + '\n')
             for _, row in df.iterrows():
-                result = process_row(row, fasta, output_format, args['strandless'])
+                result = process_row(row, fasta, output_format, args['strandedness'])
                 if result is not None:
                     output_file.write(result + '\n')
 
