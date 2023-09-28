@@ -6,7 +6,7 @@ import textwrap
 
 # input parameters
 @Gooey(
-    program_name='filter bed to fasta and txt',
+    program_name='filter bed to fasta or txt',
     header_bg_color='#DCDCDC',
     terminal_font_color='#DCDCDC',
     terminal_panel_color='#DCDCDC',
