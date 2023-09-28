@@ -20,7 +20,7 @@ def main():
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output file (choose .fasta or .txt)")
     ap.add_argument("-fea", "--feature", required=False, default='gene', choices=['gene','CDS','exon','intron','promoter'], type=str, help="specify the feature to collect sequences for")
     ap.add_argument("-strandedness", "--strandedness", required=False, default='no', choices=['yes', 'no'], type=str, help="reverse complement sequences on '-' strand")
-    ap.add_argument("-program", "--program", required=False, default='filter', choices=['filter', 'no_filter'], type=str, help="program to choose")
+    ap.add_argument("-program", "--program", required=False, default='filter', choices=['filter', 'no_filter'], type=str, help="choose whether to filter input bed file by feature")
     args = vars(ap.parse_args())
 
     # ignore warnings
@@ -33,20 +33,19 @@ def main():
         if args['program'] == 'filter' and feature != args['feature']:
             return None  # Skip this row and continue processing other rows
 
-        header = f"{ids} {chrom}:{int(start) + 1}-{end} ({strand})".replace('\r', '')
-        if str(strand) == "+":
+        if str(strand) == "-" and strandedness == 'yes':
+            header = f"{ids} {chrom}:{int(start) + 1}-{end} ({strand}) reverse complement".replace('\r', '')
+            seq = fasta[str(chrom)][int(start):end].reverse.complement.seq
+
+        if str(strand) == "-" and strandedness == 'no' or str(strand) == "+" and strandedness == 'no' or str(strand) == "+" and strandedness == 'yes':
+            header = f"{ids} {chrom}:{int(start) + 1}-{end} ({strand})".replace('\r', '')    
             seq = fasta[str(chrom)][int(start):end].seq
-        else:
-            if strandedness == 'yes':
-                seq = fasta[str(chrom)][int(start):end].reverse.complement.seq
-            else:
-                seq = fasta[str(chrom)][int(start):end].seq
 
         if output_format == 'fasta':
             header = f">{header}"
             return f"{header}\n{textwrap.fill(seq, width=60)}\n"
         elif output_format == 'txt':
-            return f"{ids}\t{chrom}\t{start}\t{end}\t{strand}\t{seq}"
+            return f"{ids}\t{chrom}\t{int(start) + 1}\t{end}\t{strand}\t{seq}"
 
     # Read the BED file into a Pandas DataFrame, selecting columns 0 to 5 and column 7
     df = pd.read_csv(args['bed'], sep="\t", header=None, usecols=[0, 1, 2, 3, 5, 7])
