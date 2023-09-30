@@ -15,7 +15,7 @@ import textwrap
 def main():
     ap = GooeyParser()
     ap.add_argument("-bed", "--bed", required=True, widget='FileChooser',
-                    help="input bed file with 0-based start coordinates(made with bedops's gff2bed function, every feature in the '.gff' or '.gff3' file should have an 'ID' tag in the 'attributes' column)")
+                    help="input bed file with 0-based start coordinates and columns 1-4, 6 and 8 as: chromosome/scaffold, start coordinate, end coordinate, name, strand and feature type")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output file (choose .fasta or .txt)")
     ap.add_argument("-fea", "--feature", required=False, default='gene', choices=['gene','CDS','exon','intron','promoter'], type=str, help="specify the feature to collect sequences for")
