@@ -23,7 +23,7 @@ def split_and_get_second(x):
 def main():
     parser = GooeyParser(description="Convert GFF3 to BED format")
 
-    parser.add_argument("input file", widget="FileChooser", help="Select the GFF3 input file", gooey_options={"wildcard": "*.gff3"})
+    parser.add_argument("input file", widget="FileChooser", help="Select the GFF3 input file", gooey_options={"wildcard": "*.gff3;*.gff"})
     parser.add_argument("output dir", widget="DirChooser", help="Select the output directory")
 
     args = vars(parser.parse_args())
