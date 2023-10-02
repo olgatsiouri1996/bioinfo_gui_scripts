@@ -19,7 +19,7 @@ def split_and_get_second(x):
             return parts[1]
     return x
 
-@Gooey(program_name="GFF3 to BED Converter")
+@Gooey(program_name="GFF3 to BED Converter",default_size=(610,370))
 def main():
     parser = GooeyParser(description="Convert GFF3 to BED format")
 
