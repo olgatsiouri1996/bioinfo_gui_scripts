@@ -4,9 +4,10 @@ from tkinter import filedialog, messagebox
 from pyfaidx import Fasta
 import textwrap
 
-def extract_sequences():
+def get_sequences():
     input_file = input_entry.get()
     ids_file = ids_entry.get()
+    action = action_var.get()
     output_type = output_type_var.get()
     output_file = output_entry.get()
     output_directory = directory_entry.get()
@@ -14,16 +15,16 @@ def extract_sequences():
     num = num_entry.get()
 
     try:
+        # import fasta file
         features = Fasta(input_file)
         # collect ids of import fasta file
         keyslist = (features.keys())
         # import the txt file with headers you want to extract the sequence from the input fasta
         txt = (str(line.rstrip()).split()[0] for line in open(ids_file))
-        # import fasta file
         # merge txt file ids to import fasta file ids and keep the common ones
         headers=(set(txt).intersection(keyslist))
         # choose to remove sequences
-        if 'remove' in output_type:
+        if action == 'remove':
             # remove those that exist in the headers generator
             final_keys = (set(keyslist).difference(headers))
         else:
@@ -108,10 +109,11 @@ def extract_sequences():
             case '1-column txt file(id)':
                 # Iterate input headers to extract identifiers and export as a 1-column txt file
                 with open(output_file, 'w') as f:
-                    f.write("id\n")
                     for key in final_keys:
                         f.write(f"{key}\n")
 
+        # Notify when processing is finished
+        messagebox.showinfo("Processing Complete", "The project is finished.")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
@@ -120,7 +122,7 @@ root = tk.Tk()
 root.title("Fasta Sequence Extractor")
 
 # Input file
-input_label = tk.Label(root, text="Input multi-fasta file:")
+input_label = tk.Label(root, text="Input multi-fasta file")
 input_label.pack()
 input_entry = tk.Entry(root)
 input_entry.pack()
@@ -128,15 +130,24 @@ input_button = tk.Button(root, text="Browse", command=lambda: input_entry.insert
 input_button.pack()
 
 # IDs file
-ids_label = tk.Label(root, text="IDs file:")
+ids_label = tk.Label(root, text="IDs file")
 ids_label.pack()
 ids_entry = tk.Entry(root)
 ids_entry.pack()
 ids_button = tk.Button(root, text="Browse", command=lambda: ids_entry.insert(0, filedialog.askopenfilename()))
 ids_button.pack()
 
+# Action
+action_label = tk.Label(root, text="Action")
+action_label.pack()
+action_var = tk.StringVar()
+action_var.set('extract')  # Default selection
+action_options = ['extract', 'remove']
+action_menu = tk.OptionMenu(root, action_var, *action_options)
+action_menu.pack()
+
 # Output type
-output_type_label = tk.Label(root, text="Output type:")
+output_type_label = tk.Label(root, text="Output type")
 output_type_label.pack()
 output_type_var = tk.StringVar()
 output_type_var.set('1 multi-fasta file')  # Default selection
@@ -145,7 +156,7 @@ output_type_menu = tk.OptionMenu(root, output_type_var, *output_type_options)
 output_type_menu.pack()
 
 # Output file
-output_label = tk.Label(root, text="Output file:")
+output_label = tk.Label(root, text="Output file")
 output_label.pack()
 output_entry = tk.Entry(root)
 output_entry.pack()
@@ -153,26 +164,26 @@ output_button = tk.Button(root, text="Browse", command=lambda: output_entry.inse
 output_button.pack()
 
 # Output directory and prefix
-directory_label = tk.Label(root, text="Output directory:")
+directory_label = tk.Label(root, text="Output directory")
 directory_label.pack()
 directory_entry = tk.Entry(root)
 directory_entry.pack()
 directory_button = tk.Button(root, text="Browse", command=lambda: directory_entry.insert(0, filedialog.askdirectory()))
 directory_button.pack()
 
-prefix_label = tk.Label(root, text="File Prefix:")
+prefix_label = tk.Label(root, text="File Prefix")
 prefix_label.pack()
 prefix_entry = tk.Entry(root)
 prefix_entry.pack()
 
 # Number of records for multi-fasta files
-num_label = tk.Label(root, text="Number of records per file:")
+num_label = tk.Label(root, text="Number of records per file")
 num_label.pack()
 num_entry = tk.Entry(root)
 num_entry.pack()
 
 # Extract button
-extract_button = tk.Button(root, text="Extract Sequences", command=extract_sequences)
+extract_button = tk.Button(root, text="Get Sequences", command=get_sequences)
 extract_button.pack()
 
 root.mainloop()
