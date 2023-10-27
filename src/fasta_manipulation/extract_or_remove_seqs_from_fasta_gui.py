@@ -4,6 +4,39 @@ from tkinter import filedialog, messagebox
 from pyfaidx import Fasta
 import textwrap
 
+def enable_output_file_widgets():
+    output_entry.config(state=tk.NORMAL)
+    directory_entry.config(state=tk.DISABLED)
+    prefix_entry.config(state=tk.DISABLED)
+    num_entry.config(state=tk.DISABLED)
+
+def enable_output_directory_widgets():
+    output_entry.config(state=tk.DISABLED)
+    directory_entry.config(state=tk.NORMAL)
+    prefix_entry.config(state=tk.DISABLED)
+    num_entry.config(state=tk.DISABLED)
+
+def enable_output_directory_prefix_widgets():
+    output_entry.config(state=tk.DISABLED)
+    directory_entry.config(state=tk.NORMAL)
+    prefix_entry.config(state=tk.NORMAL)
+    num_entry.config(state=tk.NORMAL)
+
+def update_output_widgets(*args):
+    selected_output_type = output_type_var.get()
+    
+    if selected_output_type in [
+        '1 multi-fasta file', '2-column txt file(id,seq)',
+        '3-column txt file(id,description,seq)',
+        '3-column txt file(id,full_fasta_header,seq)',
+        '2-column txt file(id,description)', '1-column txt file(id)'
+    ]:
+        enable_output_file_widgets()
+    elif selected_output_type in ['many single-fasta files', 'many multi-fasta files 1 per group']:
+        enable_output_directory_widgets()
+    elif selected_output_type == 'many multi-fasta files by number of records':
+        enable_output_directory_prefix_widgets()
+
 def get_sequences():
     input_file = input_entry.get()
     ids_file = ids_entry.get()
@@ -43,21 +76,20 @@ def get_sequences():
                     with open(f'{key}.fasta', 'w') as f:
                         f.write(f'>{str(features[key].long_name).rstrip()}\n{textwrap.fill(features[key][:].seq, width=60)}\n')
             case 'many multi-fasta files 1 per group':
-                # Create a dictionary with identifier and group
+                # create a dictionary with identifier and group
                 identifier_to_group = {}
-                with open(ids_file, 'r') as ids_file:
-                    for line in ids_file:
-                        identifier, group = line.split()
-                        identifier_to_group[identifier] = group
-                # Populate group_to_sequences dictionary
+                groups = (str(line.rstrip()).split()[1] for line in open(ids_file))
+                for (identifier, group) in zip(headers, groups):
+                    identifier_to_group[identifier] = group
+                # populate group_to_sequences dictionary
                 group_to_sequences = {}
                 for identifier, group in identifier_to_group.items():
                     if group not in group_to_sequences:
                         group_to_sequences[group] = []
-                    sequence = textwrap.fill(features[identifier][:].seq, width=60)
-                    description = features[identifier].long_name
+                    sequence = textwrap.fill(features[str(identifier)][:].seq, width=60)
+                    description = features[str(identifier)].long_name
                     group_to_sequences[group].append((description, sequence))
-                # Write sequences to group-specific output files
+                # write sequences to group-specific output files
                 os.chdir(output_directory)
                 for group, sequences in group_to_sequences.items():
                     output_file_name = f"{group}.fasta"
@@ -119,7 +151,7 @@ def get_sequences():
 
 # Create the main Tkinter window
 root = tk.Tk()
-root.title("Fasta Sequence Extractor")
+root.title("Sequence Extractor or Remover")
 
 # Input file
 input_label = tk.Label(root, text="Input multi-fasta file")
@@ -151,8 +183,12 @@ output_type_label = tk.Label(root, text="Output type")
 output_type_label.pack()
 output_type_var = tk.StringVar()
 output_type_var.set('1 multi-fasta file')  # Default selection
-output_type_options = ['1 multi-fasta file', 'many single-fasta files', 'many multi-fasta files 1 per group', 'many multi-fasta files by number of records', '2-column txt file(id,seq)', '3-column txt file(id,description,seq)', '3-column txt file(id,full_fasta_header,seq)', '2-column txt file(id,description)', '1-column txt file(id)']
-output_type_menu = tk.OptionMenu(root, output_type_var, *output_type_options)
+output_type_options = [
+    '1 multi-fasta file', '2-column txt file(id,seq)', '3-column txt file(id,description,seq)',
+    '3-column txt file(id,full_fasta_header,seq)', '2-column txt file(id,description)', '1-column txt file(id)',
+    'many single-fasta files', 'many multi-fasta files 1 per group', 'many multi-fasta files by number of records'
+]
+output_type_menu = tk.OptionMenu(root, output_type_var, *output_type_options, command=update_output_widgets)
 output_type_menu.pack()
 
 # Output file
@@ -160,10 +196,15 @@ output_label = tk.Label(root, text="Output file")
 output_label.pack()
 output_entry = tk.Entry(root)
 output_entry.pack()
-output_button = tk.Button(root, text="Browse", command=lambda: output_entry.insert(0, filedialog.asksaveasfilename(defaultextension=".fasta")))
+output_extension_var = tk.StringVar()
+output_extension_var.set('fasta')  # Default selection
+output_extension_options = ['fasta', 'txt']
+output_extension_menu = tk.OptionMenu(root, output_extension_var, *output_extension_options)
+output_extension_menu.pack()
+output_button = tk.Button(root, text="Browse", command=lambda: output_entry.insert(0, filedialog.asksaveasfilename(defaultextension=".fasta", filetypes=[("Fasta files", "*.fasta"), ("Text files", "*.txt")])))
 output_button.pack()
 
-# Output directory and prefix
+# Output directory
 directory_label = tk.Label(root, text="Output directory")
 directory_label.pack()
 directory_entry = tk.Entry(root)
@@ -171,6 +212,7 @@ directory_entry.pack()
 directory_button = tk.Button(root, text="Browse", command=lambda: directory_entry.insert(0, filedialog.askdirectory()))
 directory_button.pack()
 
+# File Prefix
 prefix_label = tk.Label(root, text="File Prefix")
 prefix_label.pack()
 prefix_entry = tk.Entry(root)
@@ -185,5 +227,8 @@ num_entry.pack()
 # Extract button
 extract_button = tk.Button(root, text="Get Sequences", command=get_sequences)
 extract_button.pack()
+
+# Initialize the output widgets based on the default value
+update_output_widgets()
 
 root.mainloop()
