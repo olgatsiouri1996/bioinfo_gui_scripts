@@ -95,7 +95,7 @@ def get_sequences():
                     output_file_name = f"{group}.fasta"
                     with open(output_file_name, "w") as output_file:
                         for description, sequence in sequences:
-                            output_file.write(f">{description}\n{sequence}\n")
+                            output_file.write(f">{str(description).rstrip()}\n{sequence}\n")
             case 'many multi-fasta files by number of records':
                 split_size = int(num)
                 split_lists = [list(final_keys)[i:i+split_size] for i in range(0, len(list(final_keys)), split_size)]
