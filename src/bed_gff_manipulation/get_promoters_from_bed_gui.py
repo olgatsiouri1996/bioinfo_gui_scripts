@@ -1,54 +1,62 @@
-# python3
 from gooey import *
-import sys
+import pandas as pd
 from pyfaidx import Fasta
-# input parameters
-@Gooey(required_cols=3, program_name= 'get promoters from bed', header_bg_color= '#DCDCDC', terminal_font_color= '#DCDCDC', terminal_panel_color= '#DCDCDC')
+import textwrap
+
+@Gooey(required_cols=3, program_name='get promoters from bed', header_bg_color='#DCDCDC', terminal_font_color='#DCDCDC', terminal_panel_color='#DCDCDC')
 def main():
     ap = GooeyParser()
-    ap.add_argument("-bed", "--bed", required=True, widget='FileChooser', help="input bed file with genes as the only features(made with bedops, every feature in the \'.gff\' or \'.gff3\' file should have an \'ID\' tag in the \'attributes\' column)")
+    ap.add_argument("-bed", "--bed", required=True, widget='FileChooser', help="input bed file 5 columns: gene id, chromosome/scaffold/contig, start, end strand")
     ap.add_argument("-in", "--input", required=True, widget='FileChooser', help="input fasta file")
     ap.add_argument("-out", "--output", required=True, widget='FileSaver', help="output fasta file")
     ap.add_argument("-pro", "--promoter", required=False, default=2000, type=int, help="promoter length")
     args = vars(ap.parse_args())
-    # main
-    # setup empty lists
-    chrom = []
-    start = []
-    end = []
-    ids = []
-    strand = []
-    # import bed 
-    with open(args['bed'], 'r') as f:
-        for line in f:
-            # convert each column to list
-            chrom.append(line.split()[0])
-            start.append(line.split()[1])
-            end.append(line.split()[2])
-            ids.append(line.split()[3])
-            strand.append(line.split()[5])
-    # create function to split the input sequence based on a specific number of characters(60)
-    def split_every_60(s): return [str(s)[i:i+60] for i in range(0,len(str(s)),60)]
-    # import fasta file
+
+    # Read BED file into a pandas DataFrame
+    bed_df = pd.read_csv(args['bed'], sep='\t', header=None, names=['a', 'b', 'c', 'd', 'e'])
+
+    # Import FASTA file
     features = Fasta(args['input'])
-    # iterate all below lists in pairs
-    sys.stdout = open(args['output'], 'w')
-    for (a, b, c, d, e) in zip(ids, chrom, start, end, strand):
-        if str(e) == "+":
-            if int(c) - args['promoter'] - 1 <= 0:
-                print(''.join([">",str(a)," ",str(b),":",str(1),"-",str(c)]).replace('\r', ''))
-                print('\n'.join(split_every_60(features[str(b)][:int(c)].seq)))
-            else:
-                print(''.join([">",str(a)," ",str(b),":",str(int(c) - args['promoter']),"-",str(c)]).replace('\r', ''))
-                print('\n'.join(split_every_60(features[str(b)][int(int(c) - args['promoter'] - 1):int(c)].seq)))
-        else:
-            if int(d) + args['promoter'] >= features[str(b)][:].end:
-                print(''.join([">",str(a)," ",str(b),":",str(d),"-",str(features[str(b)][:].end)," ","reverse complement"]).replace('\r', ''))
-                print('\n'.join(split_every_60(features[str(b)][int(d):int(features[str(b)][:].end)].reverse.complement.seq)))
-            else:
-                print(''.join([">",str(a)," ",str(b),":",str(d),"-",str(int(d) + args['promoter'])," ","reverse complement"]).replace('\r', ''))
-                print('\n'.join(split_every_60(features[str(b)][int(d):int(int(d) + args['promoter'])].reverse.complement.seq)))
-    sys.stdout.close()
+
+    def process_positive_strand(row):
+        a, b, c, _, _ = row
+        promoter_length = int(args['promoter'])
+
+        start_pos = max(1, int(c) - promoter_length - 1)
+        end_pos = int(c)
+        header = f">{a} {b}:{start_pos}-{end_pos}"
+        sequence = features[str(b)][start_pos - 1:end_pos].seq
+        wrapped_sequence = textwrap.fill(sequence, width=60)
+
+        return f"{header}\n{wrapped_sequence}"
+
+    def process_negative_strand(row):
+        a, b, _, d, _ = row
+        promoter_length = int(args['promoter'])
+
+        start_pos = int(d)
+        end_pos = min(int(d) + promoter_length, features[str(b)][:].end)
+        header = f">{a} {b}:{start_pos}-{end_pos} reverse complement"
+        sequence = features[str(b)][start_pos - 1:end_pos].reverse.complement.seq
+        wrapped_sequence = textwrap.fill(sequence, width=60)
+        
+        return f"{header}\n{wrapped_sequence}"
+    
+
+    # Split dataframe by strand and process each strand separately
+    positive_strand_df = bed_df[bed_df['e'] == '+']
+    negative_strand_df = bed_df[bed_df['e'] == '-']
+
+    # Process genes for each strand
+    positive_strand_promoters = positive_strand_df.apply(process_positive_strand, axis=1)
+    negative_strand_promoters = negative_strand_df.apply(process_negative_strand, axis=1)
+
+    # Combine the results
+    all_promoters = positive_strand_promoters.tolist() + negative_strand_promoters.tolist()
+
+    # Export to fasta
+    with open(args['output'], 'w') as output_file:
+        output_file.write('\n'.join(all_promoters))
 
 if __name__ == '__main__':
     main()
