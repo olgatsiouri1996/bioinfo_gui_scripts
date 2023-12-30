@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 def calculate_probabilities(input_file, calculation_type, allele_choice, output_file):
+    num = int(num_entry.get())
+
     try:
         # convert 1-column txt file to list
         probabilities = (float(line.rstrip()) for line in open(input_file))
@@ -14,17 +16,17 @@ def calculate_probabilities(input_file, calculation_type, allele_choice, output_
             if calculation_type == 'allele':
                 output_file.write('probability_of_containing_allele\tprobability_of_homozygous_individuals\tallele_frequency\n')
                 for i in probabilities:
-                    output_file.write(f"{round(2 * i**0.5 - i, 3):.3f}\t{round(i, 3):.3f}\t{round(i**0.5, 3):.3f}\n")
+                    output_file.write(f"{round(2 * i**0.5 - i,num):.{num}f}\t{round(i,num):.{num}f}\t{round(i**0.5,num):.{num}f}\n")
             elif calculation_type == 'carrier':
                 output_file.write('probability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n')
                 for i in probabilities:
                     p = i**0.5
-                    output_file.write(f"{round(2 * p * (1 - p), 3):.3f}\t{round(i, 3):.3f}\t{round(p, 3):.3f}\n")
+                    output_file.write(f"{round(2 * p * (1 - p),num):.{num}f}\t{round(i,num):.{num}f}\t{round(p,num):.{num}f}\n")
             else:
                 output_file.write('probability_of_containing_allele\tprobability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n')
                 for i in probabilities:
                     p = i**0.5
-                    output_file.write(f"{round(2 * i**0.5 - i, 3):.3f}\t{round(2 * p * (1 - p), 3):.3f}\t{round(i, 3):.3f}\t{round(p, 3):.3f}\n")
+                    output_file.write(f"{round(2 * i**0.5 - i,num):.{num}f}\t{round(2 * p * (1 - p),num):.{num}f}\t{round(i,num):.{num}f}\t{round(p,num):.{num}f}\n")
     
         messagebox.showinfo("Success", "Calculation completed successfully")
     except Exception as e:
@@ -77,6 +79,13 @@ def main():
     allele_dropdown = tk.OptionMenu(allele_frame, allele_var, 'this', 'other')
     allele_dropdown.pack(side='left')
     allele_frame.pack()
+
+    # Number of records for multi-fasta files
+    num_label = tk.Label(root, text="Number of digits after the decimal point")
+    num_label.pack()
+    global num_entry  # Add this line to declare num_entry as a global variable
+    num_entry = tk.Entry(root)
+    num_entry.pack()
 
     # Output file
     output_frame = tk.Frame(root)
