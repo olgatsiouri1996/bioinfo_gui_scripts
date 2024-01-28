@@ -3,31 +3,40 @@ from tkinter import filedialog, messagebox
 
 def calculate_probabilities(input_file, calculation_type, allele_choice, output_file):
     num = int(num_entry.get())
+    # functions created to adjust probabilities based on allele choice
+    def allele(prob):
+        return f"{2 * prob**0.5 - prob:.{num}f}\t{prob:.{num}f}\t{prob**0.5:.{num}f}\n"
+    
+    def carrier(prob):
+        p = prob**0.5
+        return f"{2 * p * (1 - p):.{num}f}\t{prob:.{num}f}\t{p:.{num}f}\n"
+    
+    def both(prob):
+        p = prob**0.5
+        return f"{2 * prob**0.5 - prob:.{num}f}\t{2 * p * (1 - p):.{num}f}\t{prob:.{num}f}\t{p:.{num}f}\n"
 
     try:
         # convert 1-column txt file to list
-        probabilities = (float(line.rstrip()) for line in open(input_file))
+        probabilities = map(lambda x: float(x.rstrip()), open(input_file))
         # Adjust probabilities based on allele choice
         if allele_choice == 'other':
-            probabilities = ((1 - (y ** 0.5)) ** 2 for y in probabilities)
-
+            probabilities = map(lambda x: (1 - (x ** 0.5)) ** 2, probabilities)
         # Choose an output based on the calculation type
+        if calculation_type == 'allele':
+            res = map(allele, probabilities)
+            header = 'probability_of_containing_allele\tprobability_of_homozygous_individuals\tallele_frequency\n'
+        elif calculation_type == 'carrier':
+            res = map(carrier, probabilities)
+            header = 'probability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n'
+        else:
+            res = map(both, probabilities)
+            header = 'probability_of_containing_allele\tprobability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n'
+        # save to output file
         with open(output_file, 'w') as output_file:
-            if calculation_type == 'allele':
-                output_file.write('probability_of_containing_allele\tprobability_of_homozygous_individuals\tallele_frequency\n')
-                for i in probabilities:
-                    output_file.write(f"{2 * i**0.5 - i:.{num}f}\t{i:.{num}f}\t{i**0.5:.{num}f}\n")
-            elif calculation_type == 'carrier':
-                output_file.write('probability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n')
-                for i in probabilities:
-                    p = i**0.5
-                    output_file.write(f"{2 * p * (1 - p):.{num}f}\t{i:.{num}f}\t{p:.{num}f}\n")
-            else:
-                output_file.write('probability_of_containing_allele\tprobability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n')
-                for i in probabilities:
-                    p = i**0.5
-                    output_file.write(f"{2 * i**0.5 - i:.{num}f}\t{2 * p * (1 - p):.{num}f}\t{i:.{num}f}\t{p:.{num}f}\n")
-    
+            output_file.write(header)
+            for r in res:
+                output_file.write(r)
+
         messagebox.showinfo("Success", "Calculation completed successfully")
     except Exception as e:
         messagebox.showerror("Error", f"Error writing output file: {str(e)}")
