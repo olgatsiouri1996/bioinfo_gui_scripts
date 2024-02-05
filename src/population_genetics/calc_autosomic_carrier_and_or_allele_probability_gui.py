@@ -1,46 +1,35 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import numpy as np
 
 def calculate_probabilities(input_file, calculation_type, allele_choice, output_file):
     num = int(num_entry.get())
-    # functions created to adjust probabilities based on allele choice
-    def allele(prob):
-        return f"{2 * prob**0.5 - prob:.{num}f}\t{prob:.{num}f}\t{prob**0.5:.{num}f}\n"
     
-    def carrier(prob):
-        p = prob**0.5
-        return f"{2 * p * (1 - p):.{num}f}\t{prob:.{num}f}\t{p:.{num}f}\n"
+    # Load probabilities from the input file into a NumPy array
+    probabilities = np.loadtxt(input_file)
     
-    def both(prob):
-        p = prob**0.5
-        return f"{2 * prob**0.5 - prob:.{num}f}\t{2 * p * (1 - p):.{num}f}\t{prob:.{num}f}\t{p:.{num}f}\n"
-
     try:
-        # convert 1-column txt file to list
-        probabilities = map(lambda x: float(x.rstrip()), open(input_file))
-        # Adjust probabilities based on allele choice
         if allele_choice == 'other':
-            probabilities = map(lambda x: (1 - (x ** 0.5)) ** 2, probabilities)
-        # Choose an output based on the calculation type
+            probabilities = (1 - np.sqrt(probabilities)) ** 2
+        
         if calculation_type == 'allele':
-            res = map(allele, probabilities)
+            res = np.column_stack((2 * np.sqrt(probabilities) - probabilities, probabilities, np.sqrt(probabilities)))
             header = 'probability_of_containing_allele\tprobability_of_homozygous_individuals\tallele_frequency\n'
         elif calculation_type == 'carrier':
-            res = map(carrier, probabilities)
+            p = np.sqrt(probabilities)
+            res = np.column_stack((2 * p * (1 - p), probabilities, p))
             header = 'probability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n'
         else:
-            res = map(both, probabilities)
+            p = np.sqrt(probabilities)
+            res = np.column_stack((2 * np.sqrt(probabilities) - probabilities, 2 * p * (1 - p), probabilities, p))
             header = 'probability_of_containing_allele\tprobability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n'
-        # save to output file
-        with open(output_file, 'w') as output_file:
-            output_file.write(header)
-            for r in res:
-                output_file.write(r)
 
+        # Save results to the output file
+        np.savetxt(output_file, res, delimiter='\t', header=header, fmt='%.{}f'.format(num))
         messagebox.showinfo("Success", "Calculation completed successfully")
     except Exception as e:
         messagebox.showerror("Error", f"Error writing output file: {str(e)}")
-    
+
 def open_file(entry):
     file_path = filedialog.askopenfilename()
     entry.delete(0, tk.END)
@@ -92,7 +81,7 @@ def main():
     # Number of records for multi-fasta files
     num_label = tk.Label(root, text="Number of digits after the decimal point:")
     num_label.pack()
-    global num_entry  # Add this line to declare num_entry as a global variable
+    global num_entry
     num_entry = tk.Entry(root)
     num_entry.insert(0, "3")
     num_entry.pack()
