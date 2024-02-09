@@ -16,12 +16,24 @@ def calculate_probabilities(input_file, calculation_type, output_file):
                 res = np.cos(dat)
             case 'tan':
                 res = np.tan(dat)
+            case 'inverse sin':
+                res = np.arcsin(dat)
+            case 'inverse cos':
+                res = np.arccos(dat)
+            case 'inverse tan':
+                res = np.arctan(dat)
             case 'sinh':
                 res = np.sinh(dat)
             case 'cosh':
                 res = np.cosh(dat)
             case 'tanh':
-                res = np.tanh(dat) 
+                res = np.tanh(dat)
+            case 'inverse sinh':
+                res = np.arcsinh(dat)
+            case 'inverse cosh':
+                res = np.arccosh(dat)
+            case 'inverse tanh':
+                res = np.arctanh(dat) 
             case 'ln':
                 res = np.log(dat)
             case 'log2':
@@ -52,7 +64,7 @@ def save_file(entry):
 
 def main():
     root = tk.Tk()
-    root.title('Trigonometric and Logarithmic Calculator')
+    root.title('Multi Value Scientific Calculator')
 
     # Program description
     description_label = tk.Label(root)
@@ -74,7 +86,7 @@ def main():
     calculation_type_label.pack(side='left')
     calculation_type_var = tk.StringVar(root)
     calculation_type_var.set('sin')
-    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','sinh', 'cosh', 'tanh','ln','log2','log10','exp','square root','cubic root')
+    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root')
     calculation_type_dropdown.pack(side='left')
     calculation_type_frame.pack()
 
