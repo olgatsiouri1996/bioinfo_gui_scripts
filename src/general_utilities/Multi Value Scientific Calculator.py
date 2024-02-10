@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 import numpy as np
 import math
 
-def calculate_probabilities(input_file, calculation_type, output_file):
+def calculate_probabilities(input_file, calculation_type, exponent_value, output_file):
     num = int(num_entry.get())
     
     # Load numeric data from the input file into a NumPy array
@@ -52,6 +52,8 @@ def calculate_probabilities(input_file, calculation_type, output_file):
                 res = np.sqrt(dat)
             case 'cubic root':
                 res = np.cbrt(dat)
+            case 'power or root':
+                res = np.power(dat, exponent_value)
             case 'factorial':
                 res =  np.array(list(map(math.factorial, dat)))
         # Save results to the output file
@@ -69,6 +71,20 @@ def save_file(entry):
     file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
     entry.delete(0, tk.END)
     entry.insert(tk.END, file_path)
+
+def toggle_entries(calculation_type):
+    if calculation_type == 'power or root':
+        exponent_label.config(state=tk.NORMAL)
+        exponent_entry.config(state=tk.NORMAL)
+    else:
+        exponent_label.config(state=tk.DISABLED)
+        exponent_entry.config(state=tk.DISABLED)
+    if calculation_type == 'factorial':
+        num_label.config(state=tk.DISABLED)
+        num_entry.config(state=tk.DISABLED)
+    else:
+        num_label.config(state=tk.NORMAL)
+        num_entry.config(state=tk.NORMAL)        
 
 def main():
     root = tk.Tk()
@@ -94,12 +110,24 @@ def main():
     calculation_type_label.pack(side='left')
     calculation_type_var = tk.StringVar(root)
     calculation_type_var.set('sin')
-    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root','factorial')
+    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root','power or root','factorial', command=toggle_entries)
     calculation_type_dropdown.pack(side='left')
     calculation_type_frame.pack()
 
+    # Exponent value for power or root
+    exponent_frame = tk.Frame(root)
+    global exponent_label
+    exponent_label = tk.Label(exponent_frame, text='Exponent Value:', state=tk.DISABLED)
+    exponent_label.pack(side='left')
+    global exponent_entry
+    exponent_entry = tk.Entry(exponent_frame, state=tk.DISABLED)
+    exponent_entry.insert(0, "0.5")  # Default value
+    exponent_entry.pack(side='left')
+    exponent_frame.pack()
+
     # Number of records for multi-fasta files
-    num_label = tk.Label(root, text="Number of digits after the decimal point:")
+    global num_label
+    num_label = tk.Label(root, text="Number of digits after the decimal point:",state=tk.NORMAL)
     num_label.pack()
     global num_entry
     num_entry = tk.Entry(root)
@@ -120,6 +148,7 @@ def main():
     run_button = tk.Button(root, text='Run', command=lambda: calculate_probabilities(
         input_entry.get(),
         calculation_type_var.get(),
+        float(exponent_entry.get()),
         output_entry.get()
     ))
     run_button.pack()
