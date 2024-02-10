@@ -1,12 +1,18 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import numpy as np
+import math
 
 def calculate_probabilities(input_file, calculation_type, output_file):
     num = int(num_entry.get())
     
     # Load numeric data from the input file into a NumPy array
-    dat = np.loadtxt(input_file)
+    if calculation_type =='factorial':
+        dat = np.loadtxt(input_file,dtype=int)
+        forma = '%s'
+    else:
+        dat = np.loadtxt(input_file)
+        forma = '%.{}f'.format(num)
     
     try:
         match calculation_type:            
@@ -46,8 +52,10 @@ def calculate_probabilities(input_file, calculation_type, output_file):
                 res = np.sqrt(dat)
             case 'cubic root':
                 res = np.cbrt(dat)
+            case 'factorial':
+                res =  np.array(list(map(math.factorial, dat)))
         # Save results to the output file
-        np.savetxt(output_file, res, delimiter='\t', fmt='%.{}f'.format(num))
+        np.savetxt(output_file, res, delimiter='\t', fmt=forma)
         messagebox.showinfo("Success", "Calculation completed successfully")
     except Exception as e:
         messagebox.showerror("Error", f"Error writing output file: {str(e)}")
@@ -86,7 +94,7 @@ def main():
     calculation_type_label.pack(side='left')
     calculation_type_var = tk.StringVar(root)
     calculation_type_var.set('sin')
-    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root')
+    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root','factorial')
     calculation_type_dropdown.pack(side='left')
     calculation_type_frame.pack()
 
