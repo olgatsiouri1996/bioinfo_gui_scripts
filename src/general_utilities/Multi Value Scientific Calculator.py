@@ -3,16 +3,19 @@ from tkinter import filedialog, messagebox
 import numpy as np
 import math
 
-def calculate_probabilities(input_file, calculation_type, exponent_value, output_file):
+def calculate_probabilities(input_file, calculation_type,round_type, exponent_value, output_file):
     num = int(num_entry.get())
     
     # Load numeric data from the input file into a NumPy array
     if calculation_type =='factorial':
         dat = np.loadtxt(input_file,dtype=int)
-        forma = '%s'
     else:
         dat = np.loadtxt(input_file)
+
+    if round_type == 'yes':
         forma = '%.{}f'.format(num)
+    else:
+        forma = '%s'
     
     try:
         match calculation_type:            
@@ -79,12 +82,14 @@ def toggle_entries(calculation_type):
     else:
         exponent_label.config(state=tk.DISABLED)
         exponent_entry.config(state=tk.DISABLED)
-    if calculation_type == 'factorial':
+
+def toggle_round(round_type):
+    if round_type == 'yes':
+        num_label.config(state=tk.NORMAL)
+        num_entry.config(state=tk.NORMAL)
+    else:
         num_label.config(state=tk.DISABLED)
         num_entry.config(state=tk.DISABLED)
-    else:
-        num_label.config(state=tk.NORMAL)
-        num_entry.config(state=tk.NORMAL)        
 
 def main():
     root = tk.Tk()
@@ -113,6 +118,15 @@ def main():
     calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root','power or root','factorial', command=toggle_entries)
     calculation_type_dropdown.pack(side='left')
     calculation_type_frame.pack()
+
+    round_type_frame = tk.Frame(root)
+    round_type_label = tk.Label(round_type_frame, text='Round:')
+    round_type_label.pack(side='left')
+    round_type_var = tk.StringVar(root)
+    round_type_var.set('yes')
+    round_type_dropdown = tk.OptionMenu(round_type_frame, round_type_var, 'yes', 'no', command=toggle_round)
+    round_type_dropdown.pack(side='left')
+    round_type_frame.pack()
 
     # Exponent value for power or root
     exponent_frame = tk.Frame(root)
@@ -148,6 +162,7 @@ def main():
     run_button = tk.Button(root, text='Run', command=lambda: calculate_probabilities(
         input_entry.get(),
         calculation_type_var.get(),
+        round_type_var.get(),
         float(exponent_entry.get()),
         output_entry.get()
     ))
