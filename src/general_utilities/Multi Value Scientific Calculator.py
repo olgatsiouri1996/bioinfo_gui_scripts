@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 import numpy as np
 import math
 
-def calculate_probabilities(input_file, calculation_type,round_type, exponent_value, output_file):
+def calculate_probabilities(input_file, calculation_type, round_type, exponent_value, output_file):
     num = int(num_entry.get())
     
     # Load numeric data from the input file into a NumPy array
@@ -49,16 +49,31 @@ def calculate_probabilities(input_file, calculation_type,round_type, exponent_va
                 res = np.log2(dat)
             case 'log10':
                 res = np.log10(dat)
-            case 'exp':
+            case 'e^x':
                 res = np.exp(dat)
             case 'square root':
                 res = np.sqrt(dat)
             case 'cubic root':
                 res = np.cbrt(dat)
-            case 'power or root':
+            case 'x^2 or x^0.5':
                 res = np.power(dat, exponent_value)
+            case '2^x':
+                res = np.power(exponent_value, dat)
             case 'factorial':
                 res =  np.array(list(map(math.factorial, dat)))
+            case 'add':
+                res =  dat + exponent_value
+            case 'multiply':
+                res =  dat*exponent_value
+            case 'x-2':
+                res = dat - exponent_value
+            case '2-x':
+                res = exponent_value - dat
+            case 'x/2':
+                res = dat/exponent_value
+            case '2/x':
+                res = exponent_value/dat
+                        
         # Save results to the output file
         np.savetxt(output_file, res, delimiter='\t', fmt=forma)
         messagebox.showinfo("Success", "Calculation completed successfully")
@@ -76,7 +91,7 @@ def save_file(entry):
     entry.insert(tk.END, file_path)
 
 def toggle_entries(calculation_type):
-    if calculation_type == 'power or root':
+    if calculation_type in ['x^2 or x^0.5','2^x','add','multiply','x-2','2-x','x/2','2/x']:
         exponent_label.config(state=tk.NORMAL)
         exponent_entry.config(state=tk.NORMAL)
     else:
@@ -101,7 +116,7 @@ def main():
 
     # Input file
     input_frame = tk.Frame(root)
-    input_label = tk.Label(input_frame, text='Input File:')
+    input_label = tk.Label(input_frame, text='Input 1-Column txt File(no headers):')
     input_label.pack(side='left')
     input_entry = tk.Entry(input_frame)
     input_entry.pack(side='left')
@@ -115,12 +130,12 @@ def main():
     calculation_type_label.pack(side='left')
     calculation_type_var = tk.StringVar(root)
     calculation_type_var.set('sin')
-    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','exp','square root','cubic root','power or root','factorial', command=toggle_entries)
+    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','e^x','square root','cubic root','x^2 or x^0.5','2^x','factorial','add','multiply','x-2','2-x','x/2','2/x', command=toggle_entries)
     calculation_type_dropdown.pack(side='left')
     calculation_type_frame.pack()
 
     round_type_frame = tk.Frame(root)
-    round_type_label = tk.Label(round_type_frame, text='Round:')
+    round_type_label = tk.Label(round_type_frame, text='Round Data:')
     round_type_label.pack(side='left')
     round_type_var = tk.StringVar(root)
     round_type_var.set('yes')
@@ -131,11 +146,10 @@ def main():
     # Exponent value for power or root
     exponent_frame = tk.Frame(root)
     global exponent_label
-    exponent_label = tk.Label(exponent_frame, text='Exponent Value:', state=tk.DISABLED)
+    exponent_label = tk.Label(exponent_frame, text='Power/Root/Base/Add/Multiply/Subtract/Divide Value:', state=tk.DISABLED)
     exponent_label.pack(side='left')
     global exponent_entry
     exponent_entry = tk.Entry(exponent_frame, state=tk.DISABLED)
-    exponent_entry.insert(0, "0.5")  # Default value
     exponent_entry.pack(side='left')
     exponent_frame.pack()
 
@@ -150,7 +164,7 @@ def main():
 
     # Output file
     output_frame = tk.Frame(root)
-    output_label = tk.Label(output_frame, text='Output File:')
+    output_label = tk.Label(output_frame, text='Output 1-Column txt File(no headers):')
     output_label.pack(side='left')
     output_entry = tk.Entry(output_frame)
     output_entry.pack(side='left')
