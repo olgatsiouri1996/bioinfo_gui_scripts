@@ -109,7 +109,6 @@ def toggle_round(round_type):
 def main():
     root = tk.Tk()
     root.title('Multi Value Scientific Calculator')
-
     # Program description
     description_label = tk.Label(root)
     description_label.pack()
@@ -177,7 +176,7 @@ def main():
         input_entry.get(),
         calculation_type_var.get(),
         round_type_var.get(),
-        float(exponent_entry.get()),
+        float(exponent_entry.get() or 0),
         output_entry.get()
     ))
     run_button.pack()
