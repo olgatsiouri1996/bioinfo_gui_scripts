@@ -2,31 +2,39 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import numpy as np
 
-def calculate_probabilities(input_file, calculation_type, allele_choice, output_file):
+def calculate_probabilities(input_file, calculation_type, allele_choice, round_type, output_file):
+    # Import number of digits after the decimal point or leave to default 
     num = int(num_entry.get())
-    
     # Load probabilities from the input file into a NumPy array
     probabilities = np.loadtxt(input_file)
-    
+
+    # Choose whether to round numbers
+    if round_type == 'yes':
+        forma = '%.{}f'.format(num)
+    else:
+        forma = '%s'
+
     try:
         if allele_choice == 'other':
             probabilities = (1 - np.sqrt(probabilities)) ** 2
         
         if calculation_type == 'allele':
             res = np.column_stack((2 * np.sqrt(probabilities) - probabilities, probabilities, np.sqrt(probabilities)))
-            header = 'probability_of_containing_allele\tprobability_of_homozygous_individuals\tallele_frequency\n'
+            header = 'probability_of_containing_allele\tprobability_of_homozygous_individuals\tallele_frequency'
         elif calculation_type == 'carrier':
             p = np.sqrt(probabilities)
             res = np.column_stack((2 * p * (1 - p), probabilities, p))
-            header = 'probability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n'
+            header = 'probability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency'
         else:
             p = np.sqrt(probabilities)
             res = np.column_stack((2 * np.sqrt(probabilities) - probabilities, 2 * p * (1 - p), probabilities, p))
-            header = 'probability_of_containing_allele\tprobability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency\n'
+            header = 'probability_of_containing_allele\tprobability_of_carriers\tprobability_of_homozygous_individuals\tallele_frequency'
 
         # Save results to the output file
-        np.savetxt(output_file, res, delimiter='\t', header=header, fmt='%.{}f'.format(num))
+        np.savetxt(output_file, res, delimiter='\t', header=header, fmt=forma,comments='')
+
         messagebox.showinfo("Success", "Calculation completed successfully")
+
     except Exception as e:
         messagebox.showerror("Error", f"Error writing output file: {str(e)}")
 
@@ -39,6 +47,14 @@ def save_file(entry):
     file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
     entry.delete(0, tk.END)
     entry.insert(tk.END, file_path)
+
+def toggle_round(round_type):
+    if round_type == 'yes':
+        num_label.config(state=tk.NORMAL)
+        num_entry.config(state=tk.NORMAL)
+    else:
+        num_label.config(state=tk.DISABLED)
+        num_entry.config(state=tk.DISABLED)
 
 def main():
     root = tk.Tk()
@@ -77,9 +93,19 @@ def main():
     allele_dropdown = tk.OptionMenu(allele_frame, allele_var, 'this', 'other')
     allele_dropdown.pack(side='left')
     allele_frame.pack()
+    # Round choice
+    round_type_frame = tk.Frame(root)
+    round_type_label = tk.Label(round_type_frame, text='Round Data:')
+    round_type_label.pack(side='left')
+    round_type_var = tk.StringVar(root)
+    round_type_var.set('yes')
+    round_type_dropdown = tk.OptionMenu(round_type_frame, round_type_var, 'yes', 'no', command=toggle_round)
+    round_type_dropdown.pack(side='left')
+    round_type_frame.pack()
 
     # Number of records for multi-fasta files
-    num_label = tk.Label(root, text="Number of digits after the decimal point:")
+    global num_label
+    num_label = tk.Label(root, text="Number of digits after the decimal point:",state=tk.NORMAL)
     num_label.pack()
     global num_entry
     num_entry = tk.Entry(root)
@@ -101,6 +127,7 @@ def main():
         input_entry.get(),
         calculation_type_var.get(),
         allele_var.get(),
+        round_type_var.get(),
         output_entry.get()
     ))
     run_button.pack()
