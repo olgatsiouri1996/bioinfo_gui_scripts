@@ -55,24 +55,44 @@ def calculate_probabilities(input_file, calculation_type, round_type, exponent_v
                 res = np.sqrt(dat)
             case 'cubic root':
                 res = np.cbrt(dat)
-            case 'x^2 or x^0.5':
+            case 'x^n':
                 res = np.power(dat, exponent_value)
-            case '2^x':
+            case 'x^1/n':
+                res = np.power(dat, 1/exponent_value)
+            case 'n^x':
                 res = np.power(exponent_value, dat)
             case 'factorial':
                 res =  np.array(list(map(math.factorial, dat)))
-            case 'add':
+            case 'x+n':
                 res =  dat + exponent_value
-            case 'multiply':
+            case 'x*n':
                 res =  dat*exponent_value
-            case 'x-2':
+            case 'x-n':
                 res = dat - exponent_value
-            case '2-x':
+            case 'n-x':
                 res = exponent_value - dat
-            case 'x/2':
+            case 'x/n':
                 res = dat/exponent_value
-            case '2/x':
+            case 'n/x':
                 res = exponent_value/dat
+            case 'x+y':
+                res =  dat[:, 0] + dat[:, 1]
+            case 'x*y':
+                res =  dat[:, 0]*dat[:, 1]
+            case 'x-y':
+                res = dat[:, 0] - dat[:, 1]
+            case 'y-x':
+                res = dat[:, 1] - dat[:, 0]
+            case 'x/y':
+                res = dat[:, 0]/dat[:, 1]
+            case 'y/x':
+                res = dat[:, 1]/dat[:, 0]
+            case 'x^y':
+                res = np.power(dat[:, 0], dat[:, 1])
+            case 'y^x':
+                res = np.power(dat[:, 1], dat[:, 0])
+            case 'cumulative sum':
+                res = np.cumsum(dat)
                         
         # Save results to the output file
         np.savetxt(output_file, res, delimiter='\t', fmt=forma)
@@ -91,7 +111,7 @@ def save_file(entry):
     entry.insert(tk.END, file_path)
 
 def toggle_entries(calculation_type):
-    if calculation_type in ['x^2 or x^0.5','2^x','add','multiply','x-2','2-x','x/2','2/x']:
+    if calculation_type in ['x^n','x^1/n','n^x','x+n','x*n','x-n','n-x','x/n','n/x']:
         exponent_label.config(state=tk.NORMAL)
         exponent_entry.config(state=tk.NORMAL)
     else:
@@ -115,7 +135,7 @@ def main():
 
     # Input file
     input_frame = tk.Frame(root)
-    input_label = tk.Label(input_frame, text='Input 1-Column txt File(no headers):')
+    input_label = tk.Label(input_frame, text='Input 1/2-Column txt File(no headers):')
     input_label.pack(side='left')
     input_entry = tk.Entry(input_frame)
     input_entry.pack(side='left')
@@ -129,7 +149,7 @@ def main():
     calculation_type_label.pack(side='left')
     calculation_type_var = tk.StringVar(root)
     calculation_type_var.set('sin')
-    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','e^x','square root','cubic root','x^2 or x^0.5','2^x','factorial','add','multiply','x-2','2-x','x/2','2/x', command=toggle_entries)
+    calculation_type_dropdown = tk.OptionMenu(calculation_type_frame, calculation_type_var, 'sin', 'cos', 'tan','inverse sin', 'inverse cos', 'inverse tan','sinh', 'cosh', 'tanh','inverse sinh', 'inverse cosh', 'inverse tanh','ln','log2','log10','e^x','square root','cubic root','x^n','x^1/n','n^x','factorial','x+n','x*n','x-n','n-x','x/n','n/x','x+y','x*y','x-y','y-x','x/y','y/x','x^y','y^x','cumulative sum', command=toggle_entries)
     calculation_type_dropdown.pack(side='left')
     calculation_type_frame.pack()
 
@@ -145,7 +165,7 @@ def main():
     # Exponent value for power or root
     exponent_frame = tk.Frame(root)
     global exponent_label
-    exponent_label = tk.Label(exponent_frame, text='Power/Root/Base/Add/Multiply/Subtract/Divide Value:', state=tk.DISABLED)
+    exponent_label = tk.Label(exponent_frame, text='n:', state=tk.DISABLED)
     exponent_label.pack(side='left')
     global exponent_entry
     exponent_entry = tk.Entry(exponent_frame, state=tk.DISABLED)
