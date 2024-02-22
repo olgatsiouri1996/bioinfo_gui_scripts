@@ -22,7 +22,7 @@ def parse_pdb(filename):
         df1 = pd.DataFrame()
         df1['struct_list'] = struct_list
         df1 = df1['struct_list'].value_counts()
-        df1 = round((df1 / df1.sum(axis=0)) * 100, 2)
+        df1 = (df1 / df1.sum(axis=0)) * 100
         return df1
     except Exception as e:
         messagebox.showerror("Error", str(e))
@@ -77,7 +77,7 @@ def run_analysis():
 
 # Create GUI
 root = tk.Tk()
-root.title("PDB Secondary Structure Analysis")
+root.title("PDB Secondary Structure Statistics")
 
 frame = tk.Frame(root)
 frame.pack(padx=10, pady=10)
