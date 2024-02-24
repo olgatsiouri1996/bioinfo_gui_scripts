@@ -10,12 +10,14 @@ from Bio import BiopythonWarning
 # Ignore Biopython warnings
 warnings.simplefilter('ignore', BiopythonWarning)
 
+mkdssp_path = ""  # Global variable to store the path to mkdssp.exe
+
 def parse_pdb(filename):
     try:
         parser = PDBParser()
         s = parser.get_structure("name", filename)
         fill = s[0]
-        dssp = DSSP(fill, filename, dssp='mkdssp')
+        dssp = DSSP(fill, filename, dssp=mkdssp_path)  # Using the mkdssp_path variable
         df = pd.DataFrame(dssp)
         df = df.loc[:, 2]
         struct_list = df.values.tolist()
@@ -63,6 +65,15 @@ def browse_output_file():
     except Exception as e:
         messagebox.showerror("Error", str(e))
 
+def browse_mkdssp_path():
+    try:
+        global mkdssp_path
+        mkdssp_path = filedialog.askopenfilename()
+        entry_mkdssp_path.delete(0, tk.END)
+        entry_mkdssp_path.insert(0, mkdssp_path)
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+
 def run_analysis():
     try:
         input_dir = entry_input_dir.get()
@@ -100,7 +111,16 @@ entry_output_file.grid(row=1, column=1, padx=5, pady=5)
 button_browse_output = tk.Button(frame, text="Browse", command=browse_output_file)
 button_browse_output.grid(row=1, column=2, padx=5, pady=5)
 
+label_mkdssp_path = tk.Label(frame, text="mkdssp.exe Path:")
+label_mkdssp_path.grid(row=2, column=0, sticky="w")
+
+entry_mkdssp_path = tk.Entry(frame, width=40)
+entry_mkdssp_path.grid(row=2, column=1, padx=5, pady=5)
+
+button_browse_mkdssp = tk.Button(frame, text="Browse", command=browse_mkdssp_path)
+button_browse_mkdssp.grid(row=2, column=2, padx=5, pady=5)
+
 button_run = tk.Button(frame, text="Run Analysis", command=run_analysis)
-button_run.grid(row=2, column=1, pady=10)
+button_run.grid(row=3, column=1, pady=10)
 
 root.mainloop()
