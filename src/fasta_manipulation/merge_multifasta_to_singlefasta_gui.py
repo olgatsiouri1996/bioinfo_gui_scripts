@@ -1,9 +1,10 @@
 # python3
 from gooey import *
-from pyfaidx import Fasta
+from pyfaidx import Fasta, FastaIndexingError
+import sys
 import textwrap
 # imput parameters
-@Gooey(required_cols=3, program_name="merge multi-fasta to single-fasta",default_size=(800, 530), header_bg_color= "#DCDCDC", terminal_font_color= "#DCDCDC", terminal_panel_color= "#DCDCDC")
+@Gooey(required_cols=3, program_name="Merge multi-FASTA to single-FASTA",default_size=(800, 530), header_bg_color= "#DCDCDC", terminal_font_color= '#000000', terminal_panel_color= "#DCDCDC",terminal_font_size=12, clear_before_run=True)
 def main():
     ap = GooeyParser()
     ap.add_argument("-mfa", "--Multi FASTA", required=True, widget="FileChooser", help="Input multi-FASTA file to merge its sequences")
@@ -15,8 +16,12 @@ def main():
     args = vars(ap.parse_args())
     # main
     # index fasta file
-    features = Fasta(args["Multi FASTA"], as_raw=True)
-    # store all sequences to a list
+    try:
+        features = Fasta(args["Multi FASTA"], as_raw=True)
+    except FastaIndexingError as e:
+        # handle specific FastaIndexingError
+        sys.exit(f"ERROR: Invalid FASTA Format.\n {e}")
+    # retrieve all sequences
     sequences = map(lambda key: features[key][:], features.keys())
     # select Sequence type
     if args["Unknown number"]==0:
@@ -35,6 +40,7 @@ def main():
     # export to fasta
     with open(args["Single FASTA"], "w") as f:
         f.write(fasta_formatted)
+
 
 if __name__ == "__main__":
     main()
